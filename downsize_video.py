@@ -59,42 +59,16 @@ def parse_video(cap, path_out, file_name, target_fps):
 
     out = cv2.VideoWriter(os.path.join(path_out, new_file_name), FOURCC, target_fps, (width, height))
 
-    ################################## Method 1 ################################
-    # This part doesn't work well in case the jump is between [1, 2). It will
-    # record all frames but save at lower fps thereby increasing video length.
-    ############################################################################
-    # i = 0
-    # while i < frame_count:
-    #     if i % frame_jump == 0:
-    #         cap.set(1, i)
-    #         ret, frame = cap.read()
-    #         out.write(frame)
-    #     i += 1
-
-    ################################# Method 2 #################################
-    # Works!!
-    ############################################################################
-    i = 0
-    prev_frame = -1
-    while i < frame_count:
-        new_frame = int(i * frame_jump)
-        if new_frame != prev_frame:
-            cap.set(1, new_frame)
-            ret, frame = cap.read()
+    curr_frame = 0
+    prev_frame_idx = -1
+    while curr_frame < frame_count:
+        new_frame_idx = int(i * frame_jump)
+        if new_frame_idx != prev_frame_idx:
+            cap.set(1, new_frame_idx)
+            _, frame = cap.read()
             out.write(frame)
-            prev_frame = new_frame
-        i += 1
-
-    ################################## Method 3 ################################
-    # This code just saves the video at target_fps, but doesn't drop any frames.
-    # So the final video is longer than the original.
-    ############################################################################
-    # while cap.isOpened():
-    #     ret, frame = cap.read()
-    #     if ret:
-    #         out.write(frame)
-    #     else:
-    #         break
+            prev_frame_idx = new_frame_idx
+        curr_frame += 1
 
     out.release()
 
