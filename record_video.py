@@ -1,5 +1,5 @@
 """
-Demo script for openCV tasks.
+Script to record a video and save at desired location on local system.
 
 Usage:
     record_video.py
