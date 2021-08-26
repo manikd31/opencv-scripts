@@ -1,5 +1,5 @@
 """
-Script to downsize a video, i.e. reduce the fps of any video with given fps value.
+Script to downsize a video, i.e. reduce the fps of any video with a target fps value.
 
 Usage:
     downsize_video.py [--path_in=PATH_IN]
@@ -54,8 +54,7 @@ def parse_video(cap, path_out, file_name, target_fps):
     height = int(cap.get(ID_HEIGHT))
     current_fps = int(cap.get(ID_FPS))
     frame_count = int(cap.get(ID_FRAME_COUNT))
-    # frame_jump = int(current_fps / target_fps)
-    frame_jump = current_fps / target_fps  # Use this for trying method-2
+    frame_jump = current_fps / target_fps
 
     out = cv2.VideoWriter(os.path.join(path_out, new_file_name), FOURCC, target_fps, (width, height))
 
