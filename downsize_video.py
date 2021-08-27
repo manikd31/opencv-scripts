@@ -13,7 +13,7 @@ from PyInquirer import prompt
 TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
 TEST_PATH_OUT = TEST_PATH_IN
 TEST_FILE_NAME = "test_video0.mp4"
-TEST_TARGET_FPS = 4.0
+TEST_TARGET_FPS = 4
 
 ID_WIDTH = 3
 ID_HEIGHT = 4
@@ -73,6 +73,7 @@ def main():
     path_in = answer_path_in['path_in']
     if not os.path.isdir(path_in):
         print(f"    [ERROR]\tThe folder \"{path_in}\" doesn't exist.")
+        return
 
     answer_is_dir = prompt({
         'type': 'list',
@@ -83,7 +84,7 @@ def main():
             'Single Video'
         ]
     })
-    is_dir = answer_is_dir['is_dir']
+    is_dir = answer_is_dir['is_dir'] == "Complete Folder"
 
     answer_path_out = prompt({
         'type': 'input',
@@ -97,7 +98,7 @@ def main():
         'type': 'input',
         'name': 'target_fps',
         'message': 'Enter the target FPS for the video(s): ',
-        'default': TEST_TARGET_FPS
+        'default': str(TEST_TARGET_FPS)
     })
     target_fps = float(answer_target_fps['target_fps'])
 
