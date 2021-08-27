@@ -12,14 +12,14 @@ import numpy as np
 
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
 STD_COLORS = {
-    'black': (0, 0, 0),
-    'blue': (255, 0, 0),
-    'green': (0, 255, 0),
-    'red': (0, 0, 255),
-    'cyan': (255, 255, 0),
-    'yellow': (0, 255, 255),
-    'pink': (255, 0, 255),
-    'white': (255, 255, 255)
+    'Black': (0, 0, 0),
+    'Blue': (255, 0, 0),
+    'Cyan': (255, 255, 0),
+    'Green': (0, 255, 0),
+    'Pink': (255, 0, 255),
+    'Red': (0, 0, 255),
+    'White': (255, 255, 255),
+    'Yellow': (0, 255, 255)
 }
 
 
@@ -58,11 +58,14 @@ def put_background(frame: np.ndarray,
 
 
 def main():
+    color_list = list(STD_COLORS.keys())
+    color_list.append('None')
+    print(color_list)
     answer_bg_color = prompt({
         'type': 'list',
         'name': 'bg_color',
         'message': 'Select the background color',
-        'choices': list(STD_COLORS.keys())
+        'choices': color_list
     })
     bg_color = answer_bg_color['bg_color']
 
@@ -72,8 +75,10 @@ def main():
         _, frame = cap.read()
         frame = cv2.flip(frame, 1)
 
-        x, y, w, h = 0, 0, frame.shape[1], 50
-        frame = put_background(frame, (x, y), (x + w, y + h), color=bg_color)
+        if bg_color != "None":
+            x, y, w, h = 0, 0, frame.shape[1], 50
+            frame = put_background(frame, (x, y), (x + w, y + h), color=bg_color)
+
         cv2.putText(frame, f"{frame.shape}", (10, 30), FONT_STYLE, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
 
         cv2.imshow("Video", frame)
