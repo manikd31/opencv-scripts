@@ -61,7 +61,7 @@ def parse_video(cap, path_out, file_name, target_fps):
     curr_frame = 0
     prev_frame_idx = -1
     while curr_frame < frame_count:
-        new_frame_idx = int(i * frame_jump)
+        new_frame_idx = int(curr_frame * frame_jump)
         if new_frame_idx != prev_frame_idx:
             cap.set(1, new_frame_idx)
             _, frame = cap.read()
