@@ -2,24 +2,12 @@
 Script to downsize a video, i.e. reduce the fps of any video with a target fps value.
 
 Usage:
-    downsize_video.py [--path_in=PATH_IN]
-                      [--path_out=PATH_OUT]
-                      [--file_name=FILE_NAME]
-                      [--target_fps=TARGET_FPS]
-                      [--is_dir]
+    downsize_video.py
     downsize_video.py (-h | --help)
-
-Options:
-    --path_in=PATH_IN           Path to the folder containing the video file
-    --path_out=PATH_OUT         Path to save the downsized video file
-    --file_name=FILE_NAME       Name of the video (with extension)
-    --target_fps=TARGET_FPS     Target FPS
-    --is_dir                    Boolean to indicate if the path is for video or complete dataset
 """
 
 import os
 import cv2
-from docopt import docopt
 from PyInquirer import prompt
 
 TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
@@ -75,14 +63,6 @@ def parse_video(cap, path_out, file_name, target_fps):
 
 def main():
     """Main body of the script to be run."""
-
-    # Parse arguments
-    # args = docopt(__doc__)
-    # path_in = args["--path_in"] or TEST_PATH_IN
-    # path_out = args["--path_out"] or TEST_PATH_OUT
-    # file_name = args["--file_name"] or TEST_FILE_NAME
-    # target_fps = float(args["--target_fps"]) if args["--target_fps"] else TEST_TARGET_FPS
-    # is_dir = args["--is_dir"] or False
 
     answer_path_in = prompt({
         'type': 'input',
