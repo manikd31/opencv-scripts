@@ -95,7 +95,6 @@ def main():
             for _id, video in enumerate(all_videos):
                 video_path = os.path.join(path_in, video)
                 capture = cv2.VideoCapture(video_path)
-                message = ""
                 if target_fps >= capture.get(ID_FPS):
                     print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}.")
                 else:
