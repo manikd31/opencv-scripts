@@ -44,13 +44,13 @@ def put_background(frame: np.ndarray,
     :return:
         The final frame with the rectangle.
     """
+
     color = STD_COLORS[color]
     (x, y), (w, h) = top_left, bottom_right
     sub_img = frame[y:y + h, x:x + w]
     beta = 1.0 - alpha
-    color_rect = cv2.rectangle(sub_img.copy(), top_left, bottom_right, color, cv2.FILLED)
 
-    # black_rect = np.zeros(sub_img.shape, dtype=np.uint8)
+    color_rect = cv2.rectangle(sub_img.copy(), top_left, bottom_right, color, cv2.FILLED)
     res = cv2.addWeighted(sub_img, beta, color_rect, alpha, 0.0)
     frame[y:y + h, x:x + w] = res
 
