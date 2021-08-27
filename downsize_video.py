@@ -20,6 +20,7 @@ Options:
 import os
 import cv2
 from docopt import docopt
+from PyInquirer import prompt
 
 TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
 TEST_PATH_OUT = TEST_PATH_IN
@@ -76,33 +77,61 @@ def main():
     """Main body of the script to be run."""
 
     # Parse arguments
-    args = docopt(__doc__)
-    path_in = args["--path_in"] or TEST_PATH_IN
-    path_out = args["--path_out"] or TEST_PATH_OUT
-    file_name = args["--file_name"] or TEST_FILE_NAME
-    target_fps = float(args["--target_fps"]) if args["--target_fps"] else TEST_TARGET_FPS
-    is_dir = args["--is_dir"] or False
+    # args = docopt(__doc__)
+    # path_in = args["--path_in"] or TEST_PATH_IN
+    # path_out = args["--path_out"] or TEST_PATH_OUT
+    # file_name = args["--file_name"] or TEST_FILE_NAME
+    # target_fps = float(args["--target_fps"]) if args["--target_fps"] else TEST_TARGET_FPS
+    # is_dir = args["--is_dir"] or False
 
+    answer_path_in = prompt({
+        'type': 'input',
+        'name': 'path_in',
+        'message': 'Enter the path to the videos folder: ',
+        'default': TEST_PATH_IN
+    })
+    path_in = answer_path_in['path_in']
     if not os.path.isdir(path_in):
         print(f"    [ERROR]\tThe folder \"{path_in}\" doesn't exist.")
-    elif not os.path.isfile(os.path.join(path_in, file_name)):
-        print(f"    [ERROR]\tThe file \"{file_name}\" or folder \"{path_in}\" doesn't exist.")
-    else:
-        if is_dir:
-            all_videos = os.listdir(path_in)
-            num_videos = len(all_videos)
-            print(f"    [INFO]\tFound {num_videos} videos.")
-            for _id, video in enumerate(all_videos):
-                video_path = os.path.join(path_in, video)
-                capture = cv2.VideoCapture(video_path)
-                if target_fps >= capture.get(ID_FPS):
-                    print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}.")
-                else:
-                    os.makedirs(path_out, exist_ok=True)
-                    parse_video(capture, path_out, video, target_fps)
-                    print(f"    [INFO]\tProcessed {_id + 1} / {num_videos} videos.")
-                capture.release()
-            print("    [INFO]\tDone!")
+
+    answer_is_dir = prompt({
+        'type': 'list',
+        'name': 'is_dir',
+        'message': 'Do you wish to process the complete folder or a single video?',
+        'choices': [
+            'Complete Folder',
+            'Single Video'
+        ]
+    })
+    is_dir = answer_is_dir['is_dir']
+
+    answer_path_out = prompt({
+        'type': 'input',
+        'name': 'path_out',
+        'message': 'Enter the path to save the downsized video(s) to: ',
+        'default': TEST_PATH_OUT
+    })
+    path_out = answer_path_out['path_out']
+
+    answer_target_fps = prompt({
+        'type': 'input',
+        'name': 'target_fps',
+        'message': 'Enter the target FPS for the video(s): ',
+        'default': TEST_TARGET_FPS
+    })
+    target_fps = float(answer_target_fps['target_fps'])
+
+    os.makedirs(path_out, exist_ok=True)
+    if not is_dir:
+        answer_file_name = prompt({
+            'type': 'input',
+            'name': 'file_name',
+            'message': 'Enter the name of the video to downsize: ',
+            'default': TEST_FILE_NAME
+        })
+        file_name = answer_file_name['file_name']
+        if not os.path.isfile(os.path.join(path_in, file_name)):
+            print(f"    [ERROR]\tThe file \"{file_name}\" or folder \"{path_in}\" doesn't exist.")
         else:
             video_path = os.path.join(path_in, file_name)
             capture = cv2.VideoCapture(video_path)
@@ -112,6 +141,20 @@ def main():
                 parse_video(capture, path_out, file_name, target_fps)
                 print("    [INFO]\tDone!")
             capture.release()
+    else:
+        all_videos = os.listdir(path_in)
+        num_videos = len(all_videos)
+        print(f"    [INFO]\tFound {num_videos} videos.")
+        for _id, video in enumerate(all_videos):
+            video_path = os.path.join(path_in, video)
+            capture = cv2.VideoCapture(video_path)
+            if target_fps >= capture.get(ID_FPS):
+                print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}.")
+            else:
+                parse_video(capture, path_out, video, target_fps)
+                print(f"    [INFO]\tProcessed {_id + 1} / {num_videos} videos.")
+            capture.release()
+        print("    [INFO]\tDone!")
 
 
 if __name__ == "__main__":
