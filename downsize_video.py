@@ -19,6 +19,7 @@ ID_WIDTH = 3
 ID_HEIGHT = 4
 ID_FPS = 5
 ID_FRAME_COUNT = 7
+VIDEO_EXT = ".mp4"
 
 FOURCC = 0x7634706d
 
@@ -36,8 +37,8 @@ def parse_video(cap, path_out, file_name, target_fps):
     :param target_fps:
         Target FPS for downsizing video
     """
-    name, ext = file_name.split('.')
-    new_file_name = f"{name}_downsized_at_fps={int(target_fps)}.{ext}"
+
+    new_file_name = f"{file_name.split('.')[0]}_downsized_at_fps={int(target_fps)}.{VIDEO_EXT}"
 
     width = int(cap.get(ID_WIDTH))
     height = int(cap.get(ID_HEIGHT))
@@ -123,14 +124,13 @@ def main():
                 print("    [INFO]\tDone!")
             capture.release()
     else:
-        all_videos = os.listdir(path_in)
-        num_videos = len(all_videos)
+        num_videos = len(os.listdir(path_in))
         print(f"    [INFO]\tFound {num_videos} videos.")
-        for _id, video in enumerate(all_videos):
+        for _id, video in enumerate(os.listdir(path_in)):
             video_path = os.path.join(path_in, video)
             capture = cv2.VideoCapture(video_path)
             if target_fps >= capture.get(ID_FPS):
-                print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}.")
+                print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}")
             else:
                 print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
                 parse_video(capture, path_out, video, target_fps)
