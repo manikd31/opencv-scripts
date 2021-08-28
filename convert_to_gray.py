@@ -1,13 +1,13 @@
 """
-Helper script to process videos inside a folder and flip them horizontally to double the size of the data-set.
+Script to convert RGB video to Grayscale.
 
 Usage:
-    flip_video.py (-h | --help)
+    convert_to_gray.py (-h | --help)
 """
 
 import os
-import cv2
 from PyInquirer import prompt
+import cv2
 
 TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
 TEST_PATH_OUT = TEST_PATH_IN
@@ -16,27 +16,27 @@ FOURCC = 0x7634706d
 PROP_ID_WIDTH = 3
 PROP_ID_HEIGHT = 4
 PROP_ID_FPS = 5
+IS_COLOR = False
 
 
-def flip_video(path_in, path_out):
+def convert_to_gray(path_in, path_out):
     """
-    Horizontally flip the video at the given source and save at the destination.
+    Method to convert given source video from COLOR to GRAYSCALE and save at destination.
 
     :param path_in:
-        Path to the video to be flipped
+        Path to the video file to convert to grayscale
     :param path_out:
-        Path to save the flipped video
+        Path to save the converted video at
     """
-
     cap = cv2.VideoCapture(path_in)
     out = cv2.VideoWriter(path_out, FOURCC, cap.get(PROP_ID_FPS),
-                          (int(cap.get(PROP_ID_WIDTH)), int(cap.get(PROP_ID_HEIGHT))))
+                          (int(cap.get(PROP_ID_WIDTH)), int(cap.get(PROP_ID_HEIGHT))), IS_COLOR)
 
     while True:
         ret, frame = cap.read()
         if not ret:
             break
-        frame = cv2.flip(frame, 1)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         out.write(frame)
 
     cap.release()
@@ -60,7 +60,7 @@ def main():
     answer_save_dir = prompt({
         'type': 'input',
         'name': 'save_dir',
-        'message': 'Enter the path to save the flipped videos to: ',
+        'message': 'Enter the path to save the converted videos to: ',
         'default': TEST_PATH_OUT
     })
     save_dir = answer_save_dir['save_dir']
@@ -71,9 +71,9 @@ def main():
     for _id, video in enumerate(os.listdir(videos_dir)):
         print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
         video_path = os.path.join(videos_dir, video)
-        flipped_name = f"{video.split('.')[0]}_flipped{VIDEO_EXT}"
-        save_path = os.path.join(save_dir, flipped_name)
-        flip_video(video_path, save_path)
+        grayscale_video_name = f"{video.split('.')[0]}_grayscale{VIDEO_EXT}"
+        save_path = os.path.join(save_dir, grayscale_video_name)
+        convert_to_gray(video_path, save_path)
 
     print("    [INFO]\tDone!")
 
