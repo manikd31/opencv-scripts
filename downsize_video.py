@@ -14,13 +14,11 @@ TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
 TEST_PATH_OUT = TEST_PATH_IN
 TEST_FILE_NAME = "test_video0.mp4"
 TEST_TARGET_FPS = 4
-
 ID_WIDTH = 3
 ID_HEIGHT = 4
 ID_FPS = 5
 ID_FRAME_COUNT = 7
 VIDEO_EXT = ".mp4"
-
 FOURCC = 0x7634706d
 
 
