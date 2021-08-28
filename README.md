@@ -11,6 +11,6 @@ Demo scripts to use for OpenCV projects.
 
 ---
 
-#### Data Augmentation & Pre-processing:
+#### Data Augmentation:
 - `flip_video.py` : horizontally flip recorded videos
 - `convert_to_gray` : convert colored videos to grayscale
