@@ -22,10 +22,7 @@ STD_DIMENSIONS = {
     "720p": (1280, 720),
     "1080p": (1920, 1080),
 }
-VIDEO_TYPE = [
-    'mp4',
-    'avi'
-]
+VIDEO_EXT = ".mp4"
 FOURCC = 0x7634706d
 
 
@@ -104,17 +101,8 @@ def main():
     })
     video_name = answer_video_name['video_name']
 
-    if len(video_name.split('.')) < 2 or video_name.split('.')[1] not in VIDEO_TYPE:
-        answer_video_ext = prompt({
-            'type': 'list',
-            'name': 'video_ext',
-            'message': 'Select the video extension',
-            'choices': [
-                '.mp4',
-                '.avi'
-            ],
-        })
-        video_name += answer_video_ext['video_ext']
+    if len(video_name.split('.')) < 2:
+        video_name += VIDEO_EXT
 
     capture = cv2.VideoCapture(0)
     dims = get_dims(capture, video_res)
