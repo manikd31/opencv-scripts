@@ -22,11 +22,11 @@ STD_DIMENSIONS = {
     "720p": (1280, 720),
     "1080p": (1920, 1080),
 }
-
 VIDEO_TYPE = [
     'mp4',
     'avi'
 ]
+FOURCC = 0x7634706d
 
 
 def change_res(cap, width, height):
@@ -142,7 +142,7 @@ def main():
     _fps = round(len(frames) / int(f_time - p_time))
     fps = find_closest_fps(_fps)
 
-    out = cv2.VideoWriter(os.path.join(path_out, video_name), 0x7634706d, fps, dims)
+    out = cv2.VideoWriter(os.path.join(path_out, video_name), FOURCC, fps, dims)
     print(f"    [INFO]\tSaving file at {os.path.join(path_out, video_name)}")
 
     for frame in frames:

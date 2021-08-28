@@ -132,8 +132,8 @@ def main():
             if target_fps >= capture.get(ID_FPS):
                 print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}.")
             else:
+                print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
                 parse_video(capture, path_out, video, target_fps)
-                print(f"    [INFO]\tProcessed {_id + 1} / {num_videos} videos.")
             capture.release()
         print("    [INFO]\tDone!")
 
