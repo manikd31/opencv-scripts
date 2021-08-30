@@ -5,22 +5,14 @@ Usage:
     test_output.py
     test_output.py (-h | --help)
 """
-from typing import Tuple
 from PyInquirer import prompt
+from typing import Tuple
 import cv2
 import numpy as np
 
+from constants import STD_COLORS
+
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
-STD_COLORS = {
-    'Black': (0, 0, 0),
-    'Blue': (255, 0, 0),
-    'Cyan': (255, 255, 0),
-    'Green': (0, 255, 0),
-    'Pink': (255, 0, 255),
-    'Red': (0, 0, 255),
-    'White': (255, 255, 255),
-    'Yellow': (0, 255, 255)
-}
 
 
 def put_background(frame: np.ndarray,

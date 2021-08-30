@@ -6,27 +6,21 @@ Usage:
     record_video.py (-h | --help)
 """
 
+from PyInquirer import prompt
 import cv2
 import os
-from PyInquirer import prompt
 import time
 
-path_out = r'C:\Users\Manik\Desktop\test_CV_videos'
-
-FPS16 = 16.0
-FPS24 = 24.0
-FPS30 = 30.0
-
-STD_DIMENSIONS = {
-    "480p": (640, 480),
-    "720p": (1280, 720),
-    "1080p": (1920, 1080),
-}
-VIDEO_EXT = ".mp4"
-FOURCC = 0x7634706d
+from constants import FPS16
+from constants import FPS24
+from constants import FPS30
+from constants import FOURCC
+from constants import STD_DIMENSIONS
+from constants import TEST_PATH_OUT
+from constants import VIDEO_EXT
 
 
-def change_res(cap, width, height):
+def change_res(cap: cv2.VideoCapture, width: int, height: int):
     """
     Helper method to set the video resolution for the current VideoCapture object.
 
@@ -42,7 +36,7 @@ def change_res(cap, width, height):
     cap.set(4, height)
 
 
-def get_dims(cap, res='480p'):
+def get_dims(cap: cv2.VideoCapture, res: str = '480p'):
     """
     Helper method to get the appropriate dimensions of the video based on desired resolution.
 
@@ -61,7 +55,7 @@ def get_dims(cap, res='480p'):
     return width, height
 
 
-def find_closest_fps(_fps):
+def find_closest_fps(_fps: float):
     """
     Helper method to find the closest FPS value to the recorded FPS.
 
@@ -88,10 +82,19 @@ def main():
         'message': 'Select the video resolution',
         'choices': [
             '480p',
-            '720p'
+            '720p',
+            '1080p'
         ],
     })
     video_res = answer_video_res['video_res']
+
+    answer_path_out = prompt({
+        'type': 'input',
+        'name': 'path_out',
+        'message': 'Enter the path to save video to: ',
+        'default': TEST_PATH_OUT
+    })
+    path_out = answer_path_out['path_out']
 
     answer_video_name = prompt({
         'type': 'input',

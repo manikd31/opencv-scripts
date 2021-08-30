@@ -9,13 +9,13 @@ import os
 import cv2
 from PyInquirer import prompt
 
-TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
-TEST_PATH_OUT = TEST_PATH_IN
-VIDEO_EXT = ".mp4"
-FOURCC = 0x7634706d
-PROP_ID_WIDTH = 3
-PROP_ID_HEIGHT = 4
-PROP_ID_FPS = 5
+from constants import FOURCC
+from constants import PROP_ID_FPS
+from constants import PROP_ID_HEIGHT
+from constants import PROP_ID_WIDTH
+from constants import TEST_PATH_IN
+from constants import TEST_PATH_OUT
+from constants import VIDEO_EXT
 
 
 def flip_video(path_in, path_out):

@@ -6,20 +6,20 @@ Usage:
     downsize_video.py (-h | --help)
 """
 
-import os
-import cv2
 from PyInquirer import prompt
+import cv2
+import os
 
-TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
-TEST_PATH_OUT = TEST_PATH_IN
-TEST_FILE_NAME = "test_video0.mp4"
-TEST_TARGET_FPS = 4
-ID_WIDTH = 3
-ID_HEIGHT = 4
-ID_FPS = 5
-ID_FRAME_COUNT = 7
-VIDEO_EXT = ".mp4"
-FOURCC = 0x7634706d
+from constants import FOURCC
+from constants import PROP_ID_FPS
+from constants import PROP_ID_FRAME_COUNT
+from constants import PROP_ID_HEIGHT
+from constants import PROP_ID_WIDTH
+from constants import TEST_FILE_NAME
+from constants import TEST_PATH_IN
+from constants import TEST_PATH_OUT
+from constants import TEST_TARGET_FPS
+from constants import VIDEO_EXT
 
 
 def parse_video(cap, path_out, file_name, target_fps):
@@ -38,10 +38,10 @@ def parse_video(cap, path_out, file_name, target_fps):
 
     new_file_name = f"{file_name.split('.')[0]}_downsized_at_fps={int(target_fps)}.{VIDEO_EXT}"
 
-    width = int(cap.get(ID_WIDTH))
-    height = int(cap.get(ID_HEIGHT))
-    current_fps = int(cap.get(ID_FPS))
-    frame_count = int(cap.get(ID_FRAME_COUNT))
+    width = int(cap.get(PROP_ID_WIDTH))
+    height = int(cap.get(PROP_ID_HEIGHT))
+    current_fps = int(cap.get(PROP_ID_FPS))
+    frame_count = int(cap.get(PROP_ID_FRAME_COUNT))
     frame_jump = current_fps / target_fps
 
     out = cv2.VideoWriter(os.path.join(path_out, new_file_name), FOURCC, target_fps, (width, height))
@@ -115,7 +115,7 @@ def main():
         else:
             video_path = os.path.join(path_in, file_name)
             capture = cv2.VideoCapture(video_path)
-            if target_fps >= capture.get(ID_FPS):
+            if target_fps >= capture.get(PROP_ID_FPS):
                 print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video.")
             else:
                 parse_video(capture, path_out, file_name, target_fps)
@@ -127,7 +127,7 @@ def main():
         for _id, video in enumerate(os.listdir(path_in)):
             video_path = os.path.join(path_in, video)
             capture = cv2.VideoCapture(video_path)
-            if target_fps >= capture.get(ID_FPS):
+            if target_fps >= capture.get(PROP_ID_FPS):
                 print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}")
             else:
                 print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
