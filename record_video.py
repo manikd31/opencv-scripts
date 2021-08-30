@@ -21,7 +21,9 @@ from constants import TEST_PATH_OUT
 from constants import VIDEO_EXT
 
 
-def change_res(cap: cv2.VideoCapture, width: int, height: int):
+def change_res(cap: cv2.VideoCapture,
+               width: int,
+               height: int):
     """
     Helper method to set the video resolution for the current VideoCapture object.
 
