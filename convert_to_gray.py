@@ -20,7 +20,8 @@ from constants import VIDEO_EXT
 IS_COLOR = False
 
 
-def convert_to_gray(path_in, path_out):
+def convert_to_gray(path_in: str,
+                    path_out: str):
     """
     Method to convert given source video from COLOR to GRAYSCALE and save at destination.
 
@@ -29,6 +30,7 @@ def convert_to_gray(path_in, path_out):
     :param path_out:
         Path to save the converted video at
     """
+
     cap = cv2.VideoCapture(path_in)
     out = cv2.VideoWriter(path_out, FOURCC, cap.get(PROP_ID_FPS),
                           (int(cap.get(PROP_ID_WIDTH)), int(cap.get(PROP_ID_HEIGHT))), IS_COLOR)

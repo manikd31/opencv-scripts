@@ -18,7 +18,8 @@ from constants import TEST_PATH_OUT
 from constants import VIDEO_EXT
 
 
-def flip_video(path_in, path_out):
+def flip_video(path_in: str,
+               path_out: str):
     """
     Horizontally flip the video at the given source and save at the destination.
 

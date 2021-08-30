@@ -7,6 +7,7 @@ Usage:
 """
 
 from PyInquirer import prompt
+from typing import Tuple
 import cv2
 import os
 import time
@@ -36,7 +37,8 @@ def change_res(cap: cv2.VideoCapture, width: int, height: int):
     cap.set(4, height)
 
 
-def get_dims(cap: cv2.VideoCapture, res: str = '480p'):
+def get_dims(cap: cv2.VideoCapture,
+             res: str = '480p') -> Tuple[int, int]:
     """
     Helper method to get the appropriate dimensions of the video based on desired resolution.
 
@@ -52,17 +54,18 @@ def get_dims(cap: cv2.VideoCapture, res: str = '480p'):
     if res in STD_DIMENSIONS:
         width, height = STD_DIMENSIONS[res]
     change_res(cap, width, height)
+
     return width, height
 
 
-def find_closest_fps(_fps: float):
+def find_closest_fps(_fps: float) -> float:
     """
     Helper method to find the closest FPS value to the recorded FPS.
 
     :param _fps:
         Recorded FPS
     :return:
-        Closes FPS to save video file
+        Closest FPS to save video file
     """
 
     if _fps <= FPS24:

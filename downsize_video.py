@@ -22,7 +22,10 @@ from constants import TEST_TARGET_FPS
 from constants import VIDEO_EXT
 
 
-def parse_video(cap, path_out, file_name, target_fps):
+def parse_video(cap : cv2.VideoCapture,
+                path_out: str,
+                file_name: str,
+                target_fps: float):
     """
     Helper method to get VideoCapture properties for the given video.
 

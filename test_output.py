@@ -19,7 +19,7 @@ def put_background(frame: np.ndarray,
                    top_left: Tuple[int, int],
                    bottom_right: Tuple[int, int],
                    alpha: float = 0.4,
-                   color: str = 'black') -> np.ndarray:
+                   color: str = 'Black') -> np.ndarray:
     """
     Helper method to add a grayed out background rectangle to emphasize more on foreground text.
 
@@ -50,6 +50,8 @@ def put_background(frame: np.ndarray,
 
 
 def main():
+    """Main body of the script to be run."""
+
     color_list = list(STD_COLORS.keys())
     color_list.append('None')
     print(color_list)
