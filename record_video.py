@@ -20,6 +20,8 @@ from constants import STD_DIMENSIONS
 from constants import TEST_PATH_OUT
 from constants import VIDEO_EXT
 
+FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
+
 
 def change_res(cap: cv2.VideoCapture,
                width: int,
@@ -126,7 +128,7 @@ def main():
         frames.append(frame.copy())
         current_time = time.time()
 
-        cv2.putText(frame, f"fps: {int(1 / (current_time - fps_time))}", (20, 40), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+        cv2.putText(frame, f"fps: {int(1 / (current_time - fps_time))}", (20, 40), FONT_STYLE, 2, (0, 255, 0), 2)
         fps_time = current_time
         cv2.imshow("Video", frame)
 
