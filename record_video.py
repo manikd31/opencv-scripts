@@ -114,26 +114,26 @@ def main():
     dims = get_dims(capture, video_res)
 
     frames = []
-    s_time = time.time()
-    p_time = s_time
+    start_time = time.time()
+    fps_time = start_time
 
     os.makedirs(path_out, exist_ok=True)
     while True:
         _, frame = capture.read()
         frame = cv2.flip(frame, 1)
         frames.append(frame.copy())
-        c_time = time.time()
+        current_time = time.time()
 
-        cv2.putText(frame, f"fps: {int(1 / (c_time - s_time))}", (20, 40), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
-        s_time = c_time
+        cv2.putText(frame, f"fps: {int(1 / (current_time - fps_time))}", (20, 40), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+        fps_time = current_time
         cv2.imshow("Video", frame)
 
         if cv2.waitKey(1) == ord('q'):
             break
 
-    f_time = time.time()
+    end_time = time.time()
 
-    _fps = round(len(frames) / int(f_time - p_time))
+    _fps = round(len(frames) / int(end_time - start_time))
     fps = find_closest_fps(_fps)
 
     out = cv2.VideoWriter(os.path.join(path_out, video_name), FOURCC, fps, dims)
