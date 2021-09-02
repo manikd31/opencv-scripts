@@ -1,6 +1,6 @@
 ## OpenCV Scripts
 
-Demo scripts to use for OpenCV projects.
+Demo scripts to use for OpenCV projects
 
 
 #### Helper scripts:
