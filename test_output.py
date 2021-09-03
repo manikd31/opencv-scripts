@@ -49,6 +49,31 @@ def put_background(frame: np.ndarray,
     return frame
 
 
+def put_bbox(frame: np.ndarray) -> np.ndarray:
+    """
+    Put a bounding box to get portion of the stream to test on.
+
+    :param frame:
+        The VideoCapture frame to add the bounding-box to
+    :return:
+        The final frame with the bounding-box
+    """
+
+    # Bounding-box outline color
+    color = STD_COLORS['Pink']
+
+    frame_copy = frame.copy()
+    mid_y, mid_x = frame.shape[0] // 2, frame.shape[1] // 2
+    sub_img = frame_copy[mid_y - 140:mid_y + 140, mid_x:mid_x + 280]
+
+    # Add blur to background except the bounding-box
+    frame = put_background(frame, (0, 0), (frame.shape[1], frame.shape[0]), alpha=0.65)
+    frame[mid_y - 140:mid_y + 140, mid_x:mid_x + 280] = sub_img
+    cv2.rectangle(frame, (mid_x, mid_y - 140), (mid_x + 280, mid_y + 140), color, 2, cv2.LINE_AA)
+
+    return frame
+
+
 def main():
     """Main body of the script to be run."""
 
@@ -72,6 +97,7 @@ def main():
         if bg_color != "None":
             x, y, w, h = 0, 0, frame.shape[1], 50
             frame = put_background(frame, (x, y), (x + w, y + h), color=bg_color)
+            frame = put_bbox(frame)
 
         cv2.putText(frame, f"{frame.shape}", (10, 30), FONT_STYLE, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
 
