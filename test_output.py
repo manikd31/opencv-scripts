@@ -5,11 +5,10 @@ Usage:
     test_output.py
     test_output.py (-h | --help)
 """
-from PyInquirer import prompt
+
 from typing import Tuple
 import cv2
 import numpy as np
-import time
 from keras.models import load_model
 
 from constants import STD_COLORS
@@ -81,39 +80,18 @@ def put_bbox(frame: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
 def main():
     """Main body of the script to be run."""
 
-    # color_list = list(STD_COLORS.keys())
-    # color_list.append('None')
-    # answer_bg_color = prompt({
-    #     'type': 'list',
-    #     'name': 'bg_color',
-    #     'message': 'Select the background color',
-    #     'choices': color_list
-    # })
-    # bg_color = answer_bg_color['bg_color']
-
     cap = cv2.VideoCapture(0)
 
     # Load the saved model
     model = load_model(MODEL_PATH)
-    # start_time = time.time()
-    prediction = 0
 
     while True:
         _, frame = cap.read()
         frame = cv2.flip(frame, 1)
-
-        # if bg_color != "None":
-        #     x, y, w, h = 0, 0, frame.shape[1], 50
-        #     frame = put_background(frame, (x, y), (x + w, y + h), color=bg_color)
-
         frame, sub_img = put_bbox(frame)
 
-        # current_time = time.time()
-        # if (current_time - start_time) >= 1.:
-            # Do post-processing and prediction on "sub_img"
+        # Do post-processing and prediction on "sub_img"
         prediction = process_output(model, sub_img)
-            # start_time = current_time
-
         cv2.putText(frame, f"Predicted : {prediction}", (10, 30), FONT_STYLE, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
 
         cv2.imshow("Video", frame)
