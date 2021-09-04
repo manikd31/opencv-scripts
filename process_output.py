@@ -4,7 +4,7 @@ import cv2
 import os
 
 
-def process_output(model, frame: np.ndarray) -> int:
+def process_output(model: keras.models.Sequential, frame: np.ndarray) -> int:
     """
     Process the current frame from the trained model and return output class.
 
