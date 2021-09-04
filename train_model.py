@@ -5,10 +5,7 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.layers import MaxPooling2D
-from keras.models import load_model
-from keras.models import Model
 from keras.models import Sequential
-from keras.applications.vgg16 import VGG16
 import numpy as np
 import os
 from PIL import Image
@@ -87,8 +84,6 @@ def main():
         y_true = label_bin.inverse_transform(y_test)
 
         print(f"    [INFO]\tScore = {round(accuracy_score(y_true, y_pred), 4)}")
-
-    # saved_model = load_model(model_path)
 
 
 if __name__ == "__main__":
