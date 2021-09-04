@@ -16,7 +16,7 @@ from constants import STD_COLORS
 from process_output import process_output
 
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
-MODEL_PATH = r"C:/Users/Manik/Desktop/my_model"
+MODEL_PATH = r"C:/Users/Manik/Desktop/my_aug_model"
 
 
 def put_background(frame: np.ndarray,
