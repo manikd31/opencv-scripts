@@ -9,10 +9,14 @@ from PyInquirer import prompt
 from typing import Tuple
 import cv2
 import numpy as np
+import time
+from keras.models import load_model
 
 from constants import STD_COLORS
+from process_output import process_output
 
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
+MODEL_PATH = r"C:/Users/Manik/Desktop/my_model"
 
 
 def put_background(frame: np.ndarray,
@@ -49,14 +53,14 @@ def put_background(frame: np.ndarray,
     return frame
 
 
-def put_bbox(frame: np.ndarray) -> np.ndarray:
+def put_bbox(frame: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Put a bounding box to get portion of the stream to test on.
 
     :param frame:
         The VideoCapture frame to add the bounding-box to
     :return:
-        The final frame with the bounding-box
+        The final frame with the bounding-box, and the predicted class
     """
 
     # Bounding-box outline color
@@ -71,35 +75,46 @@ def put_bbox(frame: np.ndarray) -> np.ndarray:
     frame[mid_y - 140:mid_y + 140, mid_x:mid_x + 280] = sub_img
     cv2.rectangle(frame, (mid_x, mid_y - 140), (mid_x + 280, mid_y + 140), color, 2, cv2.LINE_AA)
 
-    return frame
+    return frame, sub_img
 
 
 def main():
     """Main body of the script to be run."""
 
-    color_list = list(STD_COLORS.keys())
-    color_list.append('None')
-    print(color_list)
-    answer_bg_color = prompt({
-        'type': 'list',
-        'name': 'bg_color',
-        'message': 'Select the background color',
-        'choices': color_list
-    })
-    bg_color = answer_bg_color['bg_color']
+    # color_list = list(STD_COLORS.keys())
+    # color_list.append('None')
+    # answer_bg_color = prompt({
+    #     'type': 'list',
+    #     'name': 'bg_color',
+    #     'message': 'Select the background color',
+    #     'choices': color_list
+    # })
+    # bg_color = answer_bg_color['bg_color']
 
     cap = cv2.VideoCapture(0)
+
+    # Load the saved model
+    model = load_model(MODEL_PATH)
+    # start_time = time.time()
+    prediction = 0
 
     while True:
         _, frame = cap.read()
         frame = cv2.flip(frame, 1)
 
-        if bg_color != "None":
-            x, y, w, h = 0, 0, frame.shape[1], 50
-            frame = put_background(frame, (x, y), (x + w, y + h), color=bg_color)
-            frame = put_bbox(frame)
+        # if bg_color != "None":
+        #     x, y, w, h = 0, 0, frame.shape[1], 50
+        #     frame = put_background(frame, (x, y), (x + w, y + h), color=bg_color)
 
-        cv2.putText(frame, f"{frame.shape}", (10, 30), FONT_STYLE, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
+        frame, sub_img = put_bbox(frame)
+
+        # current_time = time.time()
+        # if (current_time - start_time) >= 1.:
+            # Do post-processing and prediction on "sub_img"
+        prediction = process_output(model, sub_img)
+            # start_time = current_time
+
+        cv2.putText(frame, f"Predicted : {prediction}", (10, 30), FONT_STYLE, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
 
         cv2.imshow("Video", frame)
 
