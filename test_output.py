@@ -2,20 +2,27 @@
 Script to run output test window for final testing.
 
 Usage:
-    test_output.py
+    test_output.py [--dataset=DATASET]
     test_output.py (-h | --help)
+
+Options:
+    --dataset=DATASET   Select the dataset to get the trained model (MNIST or ASL)
 """
 
 from typing import Tuple
 import cv2
 import numpy as np
+import os
 from keras.models import load_model
+from docopt import docopt
 
+from constants import DATASETS
+from constants import INT2LAB
 from constants import STD_COLORS
 from process_output import process_output
 
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
-MODEL_PATH = r"C:/Users/Manik/Desktop/my_aug_model"
+MODEL_BASE_PATH = r"C:/Users/Manik/Desktop"
 
 
 def put_background(frame: np.ndarray,
@@ -80,9 +87,23 @@ def put_bbox(frame: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
 def main():
     """Main body of the script to be run."""
 
+    args = docopt(__doc__)
+    dataset = args["--dataset"] or "MNIST"
+
+    if dataset not in DATASETS.keys():
+        print(f"    [INFO]\t\"{dataset} not in the list of datasets trained on.\"")
+        return
+
     cap = cv2.VideoCapture(0)
 
+    use_int2lab = False
+    if dataset == "ASL":
+        use_int2lab = True
+
     # Load the saved model
+    model_select = DATASETS[dataset]
+    MODEL_PATH = os.path.join(MODEL_BASE_PATH, model_select)
+
     model = load_model(MODEL_PATH)
 
     while True:
@@ -92,6 +113,11 @@ def main():
 
         # Do post-processing and prediction on "sub_img"
         prediction = process_output(model, sub_img)
+
+        # Convert int label to alphabet if ASL dataset is selected
+        if use_int2lab:
+            prediction = INT2LAB[prediction]
+
         cv2.putText(frame, f"Predicted : {prediction}", (10, 30), FONT_STYLE, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
 
         cv2.imshow("Video", frame)
