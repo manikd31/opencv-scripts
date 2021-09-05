@@ -1,4 +1,5 @@
 # Directories to use as default path-in and path-out
+MODEL_BASE_PATH = r"C:/Users/Manik/Desktop"
 TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
 TEST_PATH_OUT = r"C:/Users/Manik/Desktop/test_CV_videos"
 TEST_FILE_NAME = "video.mp4"
@@ -39,3 +40,37 @@ STD_DIMENSIONS = {
 FPS16 = 16.0
 FPS24 = 24.0
 FPS30 = 30.0
+
+# Saved trained models for different data-sets
+DATASETS = {
+    "ASL": 'my_sign_model',
+    "MNIST": 'my_aug_model'
+}
+
+# Alphabets associated with ASL model predictions (without J and Z)
+INT2LAB = {
+    0: 'A',
+    1: 'B',
+    2: 'C',
+    3: 'D',
+    4: 'E',
+    5: 'F',
+    6: 'G',
+    7: 'H',
+    8: 'I',
+    9: 'K',
+    10: 'L',
+    11: 'M',
+    12: 'N',
+    13: 'O',
+    14: 'P',
+    15: 'Q',
+    16: 'R',
+    17: 'S',
+    18: 'T',
+    19: 'U',
+    20: 'V',
+    21: 'W',
+    22: 'X',
+    23: 'Y'
+}
