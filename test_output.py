@@ -9,20 +9,20 @@ Options:
     --dataset=DATASET   Select the dataset to get the trained model (MNIST or ASL)
 """
 
+from docopt import docopt
+from keras.models import load_model
 from typing import Tuple
 import cv2
 import numpy as np
 import os
-from keras.models import load_model
-from docopt import docopt
 
 from constants import DATASETS
 from constants import INT2LAB
+from constants import MODEL_BASE_PATH
 from constants import STD_COLORS
 from process_output import process_output
 
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
-MODEL_BASE_PATH = r"C:/Users/Manik/Desktop"
 
 
 def put_background(frame: np.ndarray,
