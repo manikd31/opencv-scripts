@@ -15,6 +15,7 @@ Demo scripts to use for OpenCV projects.
 - `flip_video.py` : horizontally flip recorded videos
 - `convert_to_gray.py` : convert colored videos to grayscale
 - `invert_color.py` : invert image colors instead of converting to grayscale *(TODO)*
+- `add_blur.py` : add gaussian blur to videos *(TODO)*
 
 
 #### Project Outline:
