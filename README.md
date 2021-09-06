@@ -14,7 +14,8 @@ Demo scripts to use for OpenCV projects.
 #### Data Augmentation:
 - `flip_video.py` : horizontally flip recorded videos
 - `convert_to_gray.py` : convert colored videos to grayscale
-- `invert_color.py` : invert image colors instead of converting to grayscale *(TODO)*
+- _[TODO]_ `invert_color.py` : invert image colors instead of converting to grayscale
+- _[TODO]_ `add_blur.py` : add gaussian blur to videos
 
 
 #### Project Outline:
