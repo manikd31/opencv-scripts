@@ -17,7 +17,7 @@ from constants import FPS24
 from constants import FPS30
 from constants import FOURCC
 from constants import STD_DIMENSIONS
-from constants import TEST_PATH_OUT
+from constants import TEST_PATH_IN
 from constants import VIDEO_EXT
 
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
@@ -80,6 +80,34 @@ def find_closest_fps(_fps: float) -> float:
     return video_fps
 
 
+def process_display_time(start_time: time.time,
+                         current_time: time.time) -> str:
+    """
+    Helper method to parse time elapsed into the format hh:mm:ss.
+
+    :param start_time:
+        The start time of the recording
+    :param current_time:
+        The current time to get total time elapsed (in seconds)
+    :return:
+        The final string to print in the given hh:mm:ss format
+    """
+
+    time_span = current_time - start_time
+    seconds = int(time_span % 60)
+    minutes = int(time_span // 60)
+    hours = int(time_span // 3600)
+
+    if seconds < 10:
+        seconds = f"0{str(seconds)}"
+    if minutes < 10:
+        minutes = f"0{str(minutes)}"
+    if hours < 10:
+        hours = f"0{str(hours)}"
+
+    return f"{hours}:{minutes}:{seconds}"
+
+
 def main():
     """Main body of the script to be run."""
 
@@ -99,7 +127,7 @@ def main():
         'type': 'input',
         'name': 'path_out',
         'message': 'Enter the path to save video to: ',
-        'default': TEST_PATH_OUT
+        'default': TEST_PATH_IN
     })
     path_out = answer_path_out['path_out']
 
@@ -127,8 +155,10 @@ def main():
         frame = cv2.flip(frame, 1)
         frames.append(frame.copy())
         current_time = time.time()
+        time_elapsed = process_display_time(start_time, current_time)
 
         cv2.putText(frame, f"fps: {int(1 / (current_time - fps_time))}", (20, 40), FONT_STYLE, 2, (0, 255, 0), 2)
+        cv2.putText(frame, f"{time_elapsed}", (int(0.75 * dims[0]), dims[1] - 20), FONT_STYLE, 2, (255, 255, 255), 2)
         fps_time = current_time
         cv2.imshow("Video", frame)
 
