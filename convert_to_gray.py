@@ -77,7 +77,7 @@ def main():
         answer_file_names = prompt({
             'type': 'checkbox',
             'name': 'file_names',
-            'message': 'Select the videos to downsize: ',
+            'message': 'Select the videos to convert to grayscale: ',
             'choices': [{'name': _file} for _file in os.listdir(path_in)]
         })
         file_names = answer_file_names['file_names']
