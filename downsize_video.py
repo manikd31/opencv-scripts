@@ -15,7 +15,6 @@ from constants import PROP_ID_FPS
 from constants import PROP_ID_FRAME_COUNT
 from constants import PROP_ID_HEIGHT
 from constants import PROP_ID_WIDTH
-from constants import TEST_FILE_NAME
 from constants import TEST_PATH_IN
 from constants import TEST_PATH_OUT
 from constants import TEST_TARGET_FPS

@@ -1,8 +1,8 @@
 """
-Script to convert RGB video to Grayscale.
+Script to invert the color of a video(s) like photo negatives.
 
 Usage:
-    convert_to_gray.py (-h | --help)
+    invert_color.py (-h | --help)
 """
 
 from PIL import Image
