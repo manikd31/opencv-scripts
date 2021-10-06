@@ -39,7 +39,7 @@ def parse_video(cap: cv2.VideoCapture,
         Target FPS for downsizing video
     """
 
-    new_file_name = f"{file_name.split('.')[0]}_downsized_at_fps={int(target_fps)}.{VIDEO_EXT}"
+    new_file_name = f"{file_name.split('.')[0]}_downsized_at_fps={int(target_fps)}{VIDEO_EXT}"
 
     width = int(cap.get(PROP_ID_WIDTH))
     height = int(cap.get(PROP_ID_HEIGHT))
@@ -83,10 +83,23 @@ def main():
         'message': 'Do you wish to process the complete folder or a single video?',
         'choices': [
             'Complete Folder',
-            'Single Video'
+            'Select Videos'
         ]
     })
     is_dir = answer_is_dir['is_dir'] == "Complete Folder"
+
+    if is_dir:
+        file_names = os.listdir(path_in)
+    else:
+        answer_file_names = prompt({
+            'type': 'checkbox',
+            'name': 'file_names',
+            'message': 'Select the videos to downsize: ',
+            'choices': [{'name': _file} for _file in os.listdir(path_in)]
+        })
+        file_names = answer_file_names['file_names']
+
+    num_videos = len(file_names)
 
     answer_path_out = prompt({
         'type': 'input',
@@ -105,38 +118,17 @@ def main():
     target_fps = float(answer_target_fps['target_fps'])
 
     os.makedirs(path_out, exist_ok=True)
-    if not is_dir:
-        answer_file_name = prompt({
-            'type': 'input',
-            'name': 'file_name',
-            'message': 'Enter the name of the video to downsize: ',
-            'default': TEST_FILE_NAME
-        })
-        file_name = answer_file_name['file_name']
-        if not os.path.isfile(os.path.join(path_in, file_name)):
-            print(f"    [ERROR]\tThe file \"{file_name}\" or folder \"{path_in}\" doesn't exist.")
+    print(f"    [INFO]\tFound {num_videos} videos.")
+    for _id, video in enumerate(file_names):
+        video_path = os.path.join(path_in, video)
+        capture = cv2.VideoCapture(video_path)
+        if target_fps >= capture.get(PROP_ID_FPS):
+            print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}")
         else:
-            video_path = os.path.join(path_in, file_name)
-            capture = cv2.VideoCapture(video_path)
-            if target_fps >= capture.get(PROP_ID_FPS):
-                print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video.")
-            else:
-                parse_video(capture, path_out, file_name, target_fps)
-                print("    [INFO]\tDone!")
-            capture.release()
-    else:
-        num_videos = len(os.listdir(path_in))
-        print(f"    [INFO]\tFound {num_videos} videos.")
-        for _id, video in enumerate(os.listdir(path_in)):
-            video_path = os.path.join(path_in, video)
-            capture = cv2.VideoCapture(video_path)
-            if target_fps >= capture.get(PROP_ID_FPS):
-                print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}")
-            else:
-                print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
-                parse_video(capture, path_out, video, target_fps)
-            capture.release()
-        print("    [INFO]\tDone!")
+            print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
+            parse_video(capture, path_out, video, target_fps)
+        capture.release()
+    print("    [INFO]\tDone!")
 
 
 if __name__ == "__main__":
