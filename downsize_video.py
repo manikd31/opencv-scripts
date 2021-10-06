@@ -80,7 +80,7 @@ def main():
     answer_is_dir = prompt({
         'type': 'list',
         'name': 'is_dir',
-        'message': 'Do you wish to process the complete folder or a single video?',
+        'message': 'Do you wish to process the complete folder or a selected videos?',
         'choices': [
             'Complete Folder',
             'Select Videos'
@@ -99,8 +99,6 @@ def main():
         })
         file_names = answer_file_names['file_names']
 
-    num_videos = len(file_names)
-
     answer_path_out = prompt({
         'type': 'input',
         'name': 'path_out',
@@ -118,6 +116,7 @@ def main():
     target_fps = float(answer_target_fps['target_fps'])
 
     os.makedirs(path_out, exist_ok=True)
+    num_videos = len(file_names)
     print(f"    [INFO]\tFound {num_videos} videos.")
     for _id, video in enumerate(file_names):
         video_path = os.path.join(path_in, video)
