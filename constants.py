@@ -1,7 +1,7 @@
 # Directories to use as default path-in and path-out
 MODEL_BASE_PATH = r"C:/Users/Manik/Desktop"
 TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
-TEST_PATH_OUT = r"C:/Users/Manik/Desktop/test_CV_videos"
+TEST_PATH_OUT = r"C:/Users/Manik/Desktop/test_CV_aug_videos"
 TEST_FILE_NAME = "video.mp4"
 TEST_TARGET_FPS = 4
 
