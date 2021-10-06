@@ -49,33 +49,55 @@ def convert_to_gray(path_in: str,
 def main():
     """Main body of the script to be run."""
 
-    answer_videos_dir = prompt({
+    answer_path_in = prompt({
         'type': 'input',
-        'name': 'videos_dir',
+        'name': 'path_in',
         'message': 'Enter the path to the videos directory: ',
         'default': TEST_PATH_IN
     })
-    videos_dir = answer_videos_dir['videos_dir']
-    if not os.path.isdir(videos_dir):
-        print(f"    [ERROR]\tThe folder \"{videos_dir}\" doesn't exist.")
+    path_in = answer_path_in['path_in']
+    if not os.path.isdir(path_in):
+        print(f"    [ERROR]\tThe folder \"{path_in}\" doesn't exist.")
         return
 
-    answer_save_dir = prompt({
+    answer_is_dir = prompt({
+        'type': 'list',
+        'name': 'is_dir',
+        'message': 'Do you wish to process the complete folder or selected videos?',
+        'choices': [
+            'Complete Folder',
+            'Select Videos'
+        ]
+    })
+    is_dir = answer_is_dir['is_dir'] == "Complete Folder"
+
+    if is_dir:
+        file_names = os.listdir(path_in)
+    else:
+        answer_file_names = prompt({
+            'type': 'checkbox',
+            'name': 'file_names',
+            'message': 'Select the videos to downsize: ',
+            'choices': [{'name': _file} for _file in os.listdir(path_in)]
+        })
+        file_names = answer_file_names['file_names']
+
+    answer_path_out = prompt({
         'type': 'input',
-        'name': 'save_dir',
+        'name': 'path_out',
         'message': 'Enter the path to save the converted videos to: ',
         'default': TEST_PATH_OUT
     })
-    save_dir = answer_save_dir['save_dir']
-    os.makedirs(save_dir, exist_ok=True)
+    path_out = answer_path_out['path_out']
 
-    num_videos = len(os.listdir(videos_dir))
+    os.makedirs(path_out, exist_ok=True)
+    num_videos = len(file_names)
     print(f"    [INFO]\tFound {num_videos} videos.")
-    for _id, video in enumerate(os.listdir(videos_dir)):
+    for _id, video in enumerate(file_names):
         print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
-        video_path = os.path.join(videos_dir, video)
+        video_path = os.path.join(path_in, video)
         grayscale_video_name = f"{video.split('.')[0]}_grayscale{VIDEO_EXT}"
-        save_path = os.path.join(save_dir, grayscale_video_name)
+        save_path = os.path.join(path_out, grayscale_video_name)
         convert_to_gray(video_path, save_path)
 
     print("    [INFO]\tDone!")
