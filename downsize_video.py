@@ -22,7 +22,7 @@ from constants import TEST_TARGET_FPS
 from constants import VIDEO_EXT
 
 
-def parse_video(cap : cv2.VideoCapture,
+def parse_video(cap: cv2.VideoCapture,
                 path_out: str,
                 file_name: str,
                 target_fps: float):
