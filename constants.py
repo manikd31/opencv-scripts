@@ -3,7 +3,7 @@ MODEL_BASE_PATH = r"C:/Users/Manik/Desktop"
 TEST_PATH_IN = r"C:/Users/Manik/Desktop/test_CV_videos"
 TEST_PATH_OUT = r"C:/Users/Manik/Desktop/test_CV_aug_videos"
 TEST_FILE_NAME = "video.mp4"
-TEST_TARGET_FPS = 4
+TEST_TARGET_FPS = 8
 
 # Video extension
 VIDEO_EXT = ".mp4"
@@ -46,6 +46,17 @@ BLUR_INTENSITY = {
     "LOW": (5, 5),
     "MEDIUM": (10, 10),
     "HIGH": (20, 20)
+}
+
+# Default kernel-size for adding blur
+KERNEL_SIZE = (10, 10)
+
+# Data augmentation methods
+AUGMENTATION_METHODS = {
+    "Color inversion": "inv_color",
+    "Grayscale conversion": "grayscale",
+    "Horizontal flip": "flipped",
+    "Video blur": "blurred"
 }
 
 # Saved trained models for different data-sets
