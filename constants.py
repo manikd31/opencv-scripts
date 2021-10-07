@@ -41,6 +41,13 @@ FPS16 = 16.0
 FPS24 = 24.0
 FPS30 = 30.0
 
+# List of kernel sizes based on intensity
+BLUR_INTENSITY = {
+    "LOW": (5, 5),
+    "MEDIUM": (10, 10),
+    "HIGH": (20, 20)
+}
+
 # Saved trained models for different data-sets
 DATASETS = {
     "ASL": 'my_sign_model',
