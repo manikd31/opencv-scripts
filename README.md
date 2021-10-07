@@ -20,8 +20,9 @@ Demo scripts to use for OpenCV projects.
 
 
 #### TODO:
-- create a new script to train and test model outputs
 - create the model to train using PyTorch
+- finalize data-set to use
+- create a new script to train and test model outputs
 - create a new output window for live testing
 - complete report by November 19th
 
