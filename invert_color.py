@@ -97,8 +97,8 @@ def main():
     for _id, video in enumerate(file_names):
         print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
         video_path = os.path.join(path_in, video)
-        grayscale_video_name = f"{video.split('.')[0]}_inv_color{VIDEO_EXT}"
-        save_path = os.path.join(path_out, grayscale_video_name)
+        color_inverted_video_name = f"{video.split('.')[0]}_inv_color{VIDEO_EXT}"
+        save_path = os.path.join(path_out, color_inverted_video_name)
         invert_color(video_path, save_path)
 
     print("    [INFO]\tDone!")
