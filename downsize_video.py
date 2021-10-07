@@ -125,7 +125,7 @@ def main():
     print(f"    [INFO]\tFound {num_videos} videos.")
     for _id, video in enumerate(file_names):
         video_path = os.path.join(path_in, video)
-        print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
+        print(f"    [INFO]\t({_id + 1}/{num_videos})\tProcessing video \"{video}\"")
         parse_video(video_path, path_out, video, target_fps)
 
     print("    [INFO]\tDone!")

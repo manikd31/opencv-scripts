@@ -92,7 +92,7 @@ def main():
     num_videos = len(file_names)
     print(f"    [INFO]\tFound {num_videos} videos.")
     for _id, video in enumerate(file_names):
-        print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
+        print(f"    [INFO]\t({_id + 1}/{num_videos})\tProcessing video \"{video}\"")
         video_path = os.path.join(path_in, video)
         flipped_name = f"{video.split('.')[0]}_flipped{VIDEO_EXT}"
         save_path = os.path.join(path_out, flipped_name)
