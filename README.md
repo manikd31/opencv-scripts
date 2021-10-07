@@ -9,7 +9,7 @@ Demo scripts to use for OpenCV projects.
 - `test_output.py` : view the tentative output window for testing
 - `process_output.py` : post-process input video stream and get live predictions
 - `train_model.py` : train a model on mnist dataset and save it to use with test_output.py
-- _[TODO]_ `augment_dataset.py` : script to process all raw videos and create an augmented data-set from the selected data augmentation methods
+- `augment_dataset.py` : script to process all raw videos and create an augmented data-set from the selected data augmentation methods
 
 
 #### Data Augmentation:
@@ -28,3 +28,4 @@ Demo scripts to use for OpenCV projects.
 - May 2021 - [Introductory presentation](https://docs.google.com/presentation/d/1oDfragLFvmWzsUEXBTLvAuij-GW0XwMH_SSIyqX6OqE/edit?usp=sharing)
 - Jul 2021 - [Progress and updates](https://docs.google.com/presentation/d/1PjKQRSTTjoYRZZOgmXeid-PW3HIyBOyh8sNw_OZjoU8/edit?usp=sharing)
 - Sep 2021 - [Updated outline and progress](https://docs.google.com/presentation/d/15rXKTdLrlvkxmiaJCz0HH59UR8_FoUvMuG5g9bL54IQ/edit?usp=sharing)
+- Oct 2021 - [Progress Updates](https://docs.google.com/presentation/d/1lDVqSbILRHq1Q6wEgJD8x5HiSXUuBDnv8lTo3K8qCME/edit?usp=sharing)
