@@ -21,15 +21,15 @@ from constants import TEST_TARGET_FPS
 from constants import VIDEO_EXT
 
 
-def parse_video(cap: cv2.VideoCapture,
+def parse_video(path_in: str,
                 path_out: str,
                 file_name: str,
                 target_fps: float):
     """
     Helper method to get VideoCapture properties for the given video.
 
-    :param cap:
-        VideoCapture object for the video
+    :param path_in:
+        Path to the video to downsize
     :param path_out:
         Path to save the downsized video
     :param file_name:
@@ -37,6 +37,11 @@ def parse_video(cap: cv2.VideoCapture,
     :param target_fps:
         Target FPS for downsizing video
     """
+
+    cap = cv2.VideoCapture(path_in)
+    if target_fps >= cap.get(PROP_ID_FPS):
+        print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video")
+        return
 
     new_file_name = f"{file_name.split('.')[0]}_downsized_at_fps={int(target_fps)}{VIDEO_EXT}"
 
@@ -60,6 +65,7 @@ def parse_video(cap: cv2.VideoCapture,
         curr_frame += 1
 
     out.release()
+    cap.release()
 
 
 def main():
@@ -119,13 +125,9 @@ def main():
     print(f"    [INFO]\tFound {num_videos} videos.")
     for _id, video in enumerate(file_names):
         video_path = os.path.join(path_in, video)
-        capture = cv2.VideoCapture(video_path)
-        if target_fps >= capture.get(PROP_ID_FPS):
-            print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video {_id + 1}")
-        else:
-            print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
-            parse_video(capture, path_out, video, target_fps)
-        capture.release()
+        print(f"    [INFO]\t({_id + 1}/{num_videos})  Processing video \"{video}\"")
+        parse_video(video_path, path_out, video, target_fps)
+
     print("    [INFO]\tDone!")
 
 
