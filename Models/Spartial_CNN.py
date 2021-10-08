@@ -6,9 +6,11 @@ import torch.nn.functional as F
 # Repository to download the pretrained models from
 # repo = "pytorch/vision"
 
+
 class Spartial_CNN(nn.Module):
     def __init__(self, N_Classes ):
         super(Spartial_CNN, self).__init__()
+
         # use resnet50 pretrained on imagenet as our base model
         self.model = torchvision.models.resnet50(pretrained=True)
 
@@ -32,28 +34,30 @@ class Spartial_CNN(nn.Module):
         self.model.fc = custom_head
 
     def forward(self, input):
-
         x = self.model(input)
-
         return F.softmax(x, dim=1)
 
 
-if __name__ == '__main__':
-    input_shape = (10, 3, 216, 216 ) # (B, C, H, W)
-    N_CLASSES = 101
+if __name__ == "__main__":
+    input_shape = (10, 3, 216, 216 )    # (Batches, Channel, Height, Width)
+    N_CLASSES = 101     # for UCF-101 dataset
     inp = torch.rand(input_shape)
     model = Spartial_CNN(N_CLASSES)
     op = model(inp)
-    print("Spartial Model")
+    print("Spatial Model")
     print(op.shape)
+
 
 # def finetuned_resnet(include_top, weights_dir):
 #     '''
-#     :param include_top: True for training, False for generating intermediate results for
-#                         LSTM cell
-#     :param weights_dir: path to load finetune_resnet.h5
+#     :param include_top:
+#         True for training, False for generating intermediate results for LSTM cell
+#     :param weights_dir:
+#         path to load finetune_resnet.h5
 #     :return:
+#         Keras Model object
 #     '''
+#
 #     base_model = ResNet50(include_top=False, weights='imagenet', input_shape=IMSIZE)
 #     for layer in base_model.layers:
 #         layer.trainable = False
@@ -75,6 +79,6 @@ if __name__ == '__main__':
 #     return model
 #
 #
-# if __name__ == '__main__':
+# if __name__ == "__main__":
 #     model = finetuned_resnet(include_top=True, weights_dir='')
 #     print(model.summary())

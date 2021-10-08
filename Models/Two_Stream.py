@@ -5,19 +5,20 @@ import torch.nn.functional as F
 from Spartial_CNN import Spartial_CNN
 from Temporal_CNN import Temporal_CNN
 
+
 class Two_Stream(nn.Module):
     def __init__(self, N_Classes, spartial_weights=None, temporal_weights=None):
-        super(Two_Stream, self).__init__();
+        super(Two_Stream, self).__init__()
 
         self.spartial_stream = Spartial_CNN(N_Classes)
         self.temporal_stream = Temporal_CNN(N_Classes)
 
         if spartial_weights is not None:
-            # TODO: check it exception and path saftey
+            # TODO: check it exception and path safety
             self.spartial_stream.load_state_dict(torch.load(spartial_weights))
 
         if temporal_weights is not None:
-            # TODO: check it exception and path saftey os.path exist
+            # TODO: check it exception and path safety os.path exist
             self.temporal_stream.load_state_dict(torch.load(temporal_weights))
 
         # freeze all weights, the two models have been trained separately
@@ -49,4 +50,3 @@ if __name__ == "__main__":
     print(c)
 
     print(c.mean(dim=0))
-

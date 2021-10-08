@@ -4,8 +4,9 @@ import torch.nn.functional as F
 
 
 class Temporal_CNN(nn.Module):
-    def __init__(self, N_Classes: int, include_top = True ):
+    def __init__(self, n_classes: int, include_top: bool = True ):
         super(Temporal_CNN, self).__init__()
+
         self.include_top = include_top
         self.conv1 = nn.Conv2d(in_channels=18, out_channels=96, kernel_size=(7, 7), stride=(2, 2))
         self.bn1 = nn.BatchNorm2d(96)
@@ -33,11 +34,11 @@ class Temporal_CNN(nn.Module):
         self.lin7 = nn.Linear(in_features=4096, out_features=2048)
         self.drop7 = nn.Dropout(0.9)
 
-        self.lin8 = nn.Linear(in_features=2048, out_features=N_CLASSES)
+        self.lin8 = nn.Linear(in_features=2048, out_features=n_classes)
 
 
     def forward(self, input):
-        # input_shape must be (N, 18, 216, 216) -> (B, C, H, W)
+        # input_shape must be (N, 18, 216, 216) -> (Batches, Channels, Height, Width)
         x = self.conv1(input)
         x = self.bn1(x)
         x = F.relu(x)
@@ -76,12 +77,9 @@ class Temporal_CNN(nn.Module):
         return x
 
 
-
-
-
 if __name__ == '__main__':
-    input_shape = (10, 18, 216, 216 ) # (B, C, H, W)
-    N_CLASSES = 101
+    input_shape = (10, 18, 216, 216 )       # (Batches, Channels, Height, Width)
+    N_CLASSES = 101     # Number of classes for UCF-101 dataset
     inp = torch.rand(input_shape)
     model = Temporal_CNN(N_CLASSES)
     op = model(inp)
@@ -90,13 +88,17 @@ if __name__ == '__main__':
 
 # def temporal_CNN(input_shape, classes, weights_dir, include_top=True):
 #     '''
-#     The CNN for optical flow input.
-#     Since optical flow is not a common image, we cannot finetune pre-trained ResNet (The weights trained on imagenet is
-#     for images and thus is meaningless for optical flow)
-#     :param input_shape: the shape of optical flow input
-#     :param classes: number of classes
+#     The CNN for optical flow input. Since optical flow is not a common image, we cannot finetune a
+#     pre-trained ResNet (The weights trained on imagenet are for images and thus meaningless for optical flow)
+#
+#     :param input_shape:
+#         The shape of optical flow input
+#     :param classes:
+#         Number of classes
 #     :return:
+#         Keras Model object
 #     '''
+#
 #     optical_flow_input = Input(shape=input_shape)
 #
 #     x = Convolution2D(96, kernel_size=(7, 7), strides=(2, 2), padding='same', name='tmp_conv1')(optical_flow_input)
@@ -138,5 +140,4 @@ if __name__ == '__main__':
 #         model.load_weights(weights_dir, by_name=True)
 #
 #     return model
-#
 #
