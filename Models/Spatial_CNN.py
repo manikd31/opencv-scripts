@@ -7,9 +7,9 @@ import torch.nn.functional as F
 # repo = "pytorch/vision"
 
 
-class Spartial_CNN(nn.Module):
+class Spatial_CNN(nn.Module):
     def __init__(self, N_Classes ):
-        super(Spartial_CNN, self).__init__()
+        super(Spatial_CNN, self).__init__()
 
         # use resnet50 pretrained on imagenet as our base model
         self.model = torchvision.models.resnet50(pretrained=True)
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     input_shape = (10, 3, 216, 216 )    # (Batches, Channel, Height, Width)
     N_CLASSES = 101     # for UCF-101 dataset
     inp = torch.rand(input_shape)
-    model = Spartial_CNN(N_CLASSES)
+    model = Spatial_CNN(N_CLASSES)
     op = model(inp)
     print("Spatial Model")
     print(op.shape)

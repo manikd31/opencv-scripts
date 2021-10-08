@@ -2,27 +2,27 @@ import torch
 import torch.nn as nn
 import torchvision
 import torch.nn.functional as F
-from Spartial_CNN import Spartial_CNN
+from Spatial_CNN import Spatial_CNN
 from Temporal_CNN import Temporal_CNN
 
 
 class Two_Stream(nn.Module):
-    def __init__(self, N_Classes, spartial_weights=None, temporal_weights=None):
+    def __init__(self, N_Classes, spatial_weights=None, temporal_weights=None):
         super(Two_Stream, self).__init__()
 
-        self.spartial_stream = Spartial_CNN(N_Classes)
+        self.spatial_stream = Spatial_CNN(N_Classes)
         self.temporal_stream = Temporal_CNN(N_Classes)
 
-        if spartial_weights is not None:
+        if spatial_weights is not None:
             # TODO: check it exception and path safety
-            self.spartial_stream.load_state_dict(torch.load(spartial_weights))
+            self.spatial_stream.load_state_dict(torch.load(spatial_weights))
 
         if temporal_weights is not None:
             # TODO: check it exception and path safety os.path exist
             self.temporal_stream.load_state_dict(torch.load(temporal_weights))
 
         # freeze all weights, the two models have been trained separately
-        for layer in self.spartial_stream.parameters():
+        for layer in self.spatial_stream.parameters():
             layer.requires_grad = False
 
         for layer in self.temporal_stream.parameters():
@@ -32,7 +32,7 @@ class Two_Stream(nn.Module):
         # x - input to spatial stream (B, 3, 216, 216)
         # y - input to temporal stream (B, 18, 216, 216)
 
-        x = self.spartial_stream(x)
+        x = self.spatial_stream(x)
         y = self.temporal_stream(y)
 
         # Average
