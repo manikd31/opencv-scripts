@@ -125,10 +125,10 @@ def record_videos(path_out: str,
     dims = get_dims(cap, video_res)
 
     video_num = 0
-    video_name_num = f"{video_name}_{video_num}.mp4"      # video_name : sample_video_0.mp4
+    video_name_num = f"{video_name}_{video_num}{VIDEO_EXT}"      # video_name : "sample_video_0.mp4"
     while video_name_num in os.listdir(path_out):
         video_num += 1
-        video_name_num = f"{video_name}_{video_num}.mp4"
+        video_name_num = f"{video_name}_{video_num}{VIDEO_EXT}"
 
     out = None
     is_recording = False
@@ -156,7 +156,7 @@ def record_videos(path_out: str,
         if key_press == ord('e') and is_recording:
             is_recording = False
             video_num += 1
-            video_name_num = f"{video_name}_{video_num}.mp4"
+            video_name_num = f"{video_name}_{video_num}{VIDEO_EXT}"
 
         if is_recording:
             out.write(frame_copy)
@@ -205,7 +205,7 @@ def main():
         'type': 'input',
         'name': 'video_name',
         'message': 'Enter the video name: ',
-        'default': 'video.mp4'
+        'default': f'video{VIDEO_EXT}'
     })
     video_name = answer_video_name['video_name']
 
