@@ -1,8 +1,7 @@
 """
-Script to record a video and save at desired location on local system.
+Script to record videos and save at desired location on local system.
 
 Usage:
-    record_video.py
     record_video.py (-h | --help)
 """
 
@@ -108,8 +107,155 @@ def process_display_time(start_time: time.time,
     return f"{hours}:{minutes}:{seconds}"
 
 
+def record_single_video(path_out: str,
+                        video_name: str,
+                        video_res: str):
+    """
+    Helper method to record a single video at a time and end script.
+
+    :param path_out:
+        Path to save the video(s) to
+    :param video_name:
+        Name of the video to save
+    :param video_res:
+        Video resolution to use while saving the video
+    """
+
+    cap = cv2.VideoCapture(0)
+    dims = get_dims(cap, video_res)
+
+    video_num = 0
+    video_name_num = f"{video_name}_{video_num}.mp4"      # video_name : sample_video_0.mp4
+    while video_name_num in os.listdir(path_out):
+        video_num += 1
+        video_name_num = f"{video_name}_{video_num}.mp4"
+
+    out = None
+    is_recording = False
+    start_time = time.time()
+
+    while True:
+        _, frame = cap.read()
+        frame = cv2.flip(frame, 1)
+        frame_copy = frame.copy()
+
+        cv2.putText(frame, f"R : Start recording", (dims[0] - 300, dims[1] - 40), FONT_STYLE, 1.5, (255, 255, 255), 2)
+        cv2.putText(frame, f"E : End recording", (dims[0] - 300, dims[1] - 20), FONT_STYLE, 1.5, (255, 255, 255), 2)
+
+        key_press = cv2.waitKey(1) & 0xff
+
+        # Hit "R" to start recording
+        if key_press == ord('r') and not is_recording:
+            is_recording = True
+            start_time = time.time()
+            path_to_save = os.path.join(path_out, video_name_num)
+            print(f"    [INFO]\tSaving file at {path_to_save}")
+            out = cv2.VideoWriter(path_to_save, FOURCC, FPS30, dims)
+
+        # Hit "E" to end recording
+        if key_press == ord('e') and is_recording:
+            cv2.destroyAllWindows()
+            break
+
+        if is_recording:
+            out.write(frame_copy)
+            time_elapsed = process_display_time(start_time, time.time())
+            cv2.putText(frame, f"Recording : {video_name_num}", (20, 40), FONT_STYLE, 1.5, (255, 255, 255), 2)
+            cv2.putText(frame, f"{time_elapsed}", (20, dims[1] - 20), FONT_STYLE, 1.5, (255, 255, 255), 2)
+        else:
+            cv2.putText(frame, f"Not recording", (20, 40), FONT_STYLE, 1.5, (255, 255, 255), 2)
+
+        cv2.imshow("Video", frame)
+
+    cap.release()
+    if out:
+        out.release()
+
+
+def record_multiple_videos(path_out: str,
+                           video_name: str,
+                           video_res: str):
+    """
+    Helper method to record multiple videos and end script on pressing "Q".
+
+    :param path_out:
+        Path to save the video(s) to
+    :param video_name:
+        Name of the video to save
+    :param video_res:
+        Video resolution to use while saving the video
+    """
+
+    cap = cv2.VideoCapture(0)
+    dims = get_dims(cap, video_res)
+
+    video_num = 0
+    video_name_num = f"{video_name}_{video_num}.mp4"      # video_name : sample_video_0.mp4
+    while video_name_num in os.listdir(path_out):
+        video_num += 1
+        video_name_num = f"{video_name}_{video_num}.mp4"
+
+    out = None
+    is_recording = False
+    start_time = time.time()
+
+    while True:
+        _, frame = cap.read()
+        frame = cv2.flip(frame, 1)
+        frame_copy = frame.copy()
+
+        cv2.putText(frame, f"R : Start recording", (dims[0] - 300, dims[1] - 60), FONT_STYLE, 1.5, (255, 255, 255), 2)
+        cv2.putText(frame, f"E : End recording", (dims[0] - 300, dims[1] - 40), FONT_STYLE, 1.5, (255, 255, 255), 2)
+        cv2.putText(frame, f"Q : Quit", (dims[0] - 300, dims[1] - 20), FONT_STYLE, 1.5, (255, 255, 255), 2)
+
+        key_press = cv2.waitKey(1) & 0xff
+
+        # Hit "R" to start recording
+        if key_press == ord('r') and not is_recording:
+            start_time = time.time()
+            is_recording = True
+            path_to_save = os.path.join(path_out, video_name_num)
+            out = cv2.VideoWriter(path_to_save, FOURCC, FPS30, dims)
+
+        # Hit "E" to end recording
+        if key_press == ord('e') and is_recording:
+            is_recording = False
+            video_num += 1
+            video_name_num = f"{video_name}_{video_num}.mp4"
+
+        if is_recording:
+            out.write(frame_copy)
+            time_elapsed = process_display_time(start_time, time.time())
+            cv2.putText(frame, f"Recording : {video_name_num}", (20, 40), FONT_STYLE, 1.5, (255, 255, 255), 2)
+            cv2.putText(frame, f"{time_elapsed}", (20, dims[1] - 20), FONT_STYLE, 1.5, (255, 255, 255), 2)
+        else:
+            cv2.putText(frame, f"Not recording", (20, 40), FONT_STYLE, 1.5, (255, 255, 255), 2)
+
+        # Hit "Q" to terminate script
+        if key_press == ord('q'):
+            cv2.destroyAllWindows()
+            break
+
+        cv2.imshow("Video", frame)
+
+    cap.release()
+    if out:
+        out.release()
+
+
 def main():
     """Main body of the script to be run."""
+
+    answer_num_recordings = prompt({
+        'type': 'list',
+        'name': 'num_recordings',
+        'message': 'How many videos do you wish to record?',
+        'choices': [
+            'Single',
+            'Multiple'
+        ]
+    })
+    num_recordings = answer_num_recordings['num_recordings'].lower()
 
     answer_video_res = prompt({
         'type': 'list',
@@ -142,43 +288,12 @@ def main():
     if len(video_name.split('.')) < 2:
         video_name += VIDEO_EXT
 
-    capture = cv2.VideoCapture(0)
-    dims = get_dims(capture, video_res)
-
-    frames = []
-    start_time = time.time()
-    fps_time = start_time
-
     os.makedirs(path_out, exist_ok=True)
-    while True:
-        _, frame = capture.read()
-        frame = cv2.flip(frame, 1)
-        frames.append(frame.copy())
-        current_time = time.time()
-        time_elapsed = process_display_time(start_time, current_time)
-
-        cv2.putText(frame, f"fps: {int(1 / (current_time - fps_time))}", (20, 40), FONT_STYLE, 2, (0, 255, 0), 2)
-        cv2.putText(frame, f"{time_elapsed}", (int(0.75 * dims[0]), dims[1] - 20), FONT_STYLE, 2, (255, 255, 255), 2)
-        fps_time = current_time
-        cv2.imshow("Video", frame)
-
-        if cv2.waitKey(1) == ord('q'):
-            break
-
-    end_time = time.time()
-
-    _fps = round(len(frames) / int(end_time - start_time))
-    fps = find_closest_fps(_fps)
-
-    out = cv2.VideoWriter(os.path.join(path_out, video_name), FOURCC, fps, dims)
-    print(f"    [INFO]\tSaving file at {os.path.join(path_out, video_name)}")
-
-    for frame in frames:
-        out.write(frame)
-
-    cv2.destroyAllWindows()
-    capture.release()
-    out.release()
+    video_name = video_name.split('.')[0]
+    if num_recordings == "single":
+        record_single_video(path_out, video_name, video_res)
+    else:
+        record_multiple_videos(path_out, video_name, video_res)
 
 
 if __name__ == "__main__":
