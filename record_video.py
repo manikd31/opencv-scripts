@@ -16,6 +16,7 @@ from constants import FPS24
 from constants import FPS30
 from constants import FOURCC
 from constants import STD_DIMENSIONS
+from constants import TEST_FILE_NAME
 from constants import TEST_PATH_IN
 from constants import VIDEO_EXT
 
@@ -205,7 +206,7 @@ def main():
         'type': 'input',
         'name': 'video_name',
         'message': 'Enter the video name: ',
-        'default': f'video{VIDEO_EXT}'
+        'default': TEST_FILE_NAME
     })
     video_name = answer_video_name['video_name']
 
