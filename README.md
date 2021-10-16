@@ -91,7 +91,7 @@ To begin using the scripts, follow the commands mentioned below:
 
       Enter the video name:      video.mp4
 
-When recording, the videos will be saved with a number at the end, for example, the first 2 videos with the name `video.mp4` will become `video_0.mp4` and `video_1.mp4` such that there are no file names overlapping.
+When recording, the videos will be saved with a number at the end, for example, the first 2 videos with the name `video.mp4` will become `video_0.mp4` and `video_1.mp4` to avoid overwriting files with same names.
 
 To manipulate the video recording mechanism, there are key shortcuts on the screen. The display also shows if a video is being recorded or not, and how long the video has been recorded so far. These keypresses are as follows:
 - Press `R` to start recording a video if not currently recording.
