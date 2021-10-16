@@ -38,3 +38,64 @@ Demo scripts to use for OpenCV projects.
 - Jul 2021 - [Progress and updates](https://docs.google.com/presentation/d/1PjKQRSTTjoYRZZOgmXeid-PW3HIyBOyh8sNw_OZjoU8/edit?usp=sharing)
 - Sep 2021 - [Updated outline and progress](https://docs.google.com/presentation/d/15rXKTdLrlvkxmiaJCz0HH59UR8_FoUvMuG5g9bL54IQ/edit?usp=sharing)
 - Oct 2021 - [Progress Updates](https://docs.google.com/presentation/d/1lDVqSbILRHq1Q6wEgJD8x5HiSXUuBDnv8lTo3K8qCME/edit?usp=sharing)
+
+---
+
+## Requirements and Installation
+
+The following steps are confirmed to work on Windows 10 and macOS.
+
+#### Step 1: Clone the repository
+
+The first step is to clone this repository into a desired local directory, and switch to the project:
+    
+    git clone https://github.com/manikd31/opencv-scripts.git
+    cd opencv-scripts
+
+#### Step 2: Install required dependencies
+
+Once cloned, install the dependencies specified in the file `requirements.txt` within a virtual environment, preferably using [miniconda](https://docs.conda.io/en/latest/miniconda.html). To create the virtual environment, use the command:
+
+    conda create -y -n opencv-scripts
+    conda activate opencv-scripts
+
+And then, install the dependencies using:
+
+    pip install -r requirements.txt
+
+---
+
+## Getting Started
+
+To begin using the scripts, follow the commands mentioned below:
+
+1. `record_video.py`
+
+  Use this script to record several videos in your desired directory just with the help of a few key presses.
+- Run the script using the command:
+
+      python record_video.py
+
+- When prompted about the video resolution, select the one you wish to use _(select 480p for low-res 640x480 videos)_
+
+      Select the video resolution:
+       > 480p
+         720p
+         1080p
+
+- Next, specify the path to save the recorded videos to (if the directory doesn't exist, the program will create one)
+
+      Enter the path to save the videos to:     C:/Users/user/Desktop
+
+- And finally, enter the name of the video (with or without the extension .MP4)
+
+      Enter the video name:      video.mp4
+
+When recording, the videos will be saved with a number at the end, for example, the first 2 videos with the name `video.mp4` will become `video_0.mp4` and `video_1.mp4` such that there are no file names overlapping.
+
+To manipulate the video recording mechanism, there are key shortcuts on the screen. The display also shows if a video is being recorded or not, and how long the video has been recorded so far. These keypresses are as follows:
+- Press `R` to start recording a video if not currently recording.
+- Press `E` to end the current video recording and save it to the directory.
+- Press `Q` to terminate the script and get back to the terminal.
+
+---
