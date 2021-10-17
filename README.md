@@ -2,6 +2,21 @@
 
 Demo scripts to use for OpenCV projects.
 
+### Table of Contents
+
+- [Requirements and Installation](#requirements-and-installation)
+  - [Cloning the repository](#cloning-the-repository)
+  - [Installing required dependencies](#installing-required-dependencies)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+  - [Video Recording](#video-recording)
+  - [Downsizing Video](#downsizing-video)
+- [Data Augmentation](#data-augmentation)
+  - [Horizontal Flipping](#horizontal-flipping)
+  - [Grayscale Conversion](#grayscale-conversion)
+  - [Color Inversion](#color-inversion)
+  - [Video Blurring](#video-blurring)
+
 
 #### Helper scripts:
 - `record_video.py` : record videos using terminal and save to desired location in local system
@@ -45,14 +60,16 @@ Demo scripts to use for OpenCV projects.
 
 The following steps are confirmed to work on Windows 10 and macOS.
 
-#### Step 1: Clone the repository
+### Step 1
+### Cloning the repository
 
 The first step is to clone this repository into a desired local directory, and switch to the project:
     
     git clone https://github.com/manikd31/opencv-scripts.git
     cd opencv-scripts
 
-#### Step 2: Install required dependencies
+### Step 2
+### Installing required dependencies
 
 Once cloned, install the dependencies specified in the file `requirements.txt` within a virtual environment, preferably using [miniconda](https://docs.conda.io/en/latest/miniconda.html). To create the virtual environment, use the command:
 
@@ -73,13 +90,15 @@ The first step to using any of the scripts is to populate/update the `constants.
     TEST_PATH_OUT = r"C:/Users/user/Desktop"
     TEST_FILE_NAME = "video_name.mp4"
 
+---
+
 ## Usage
 
 To begin using the scripts, follow the commands mentioned below:
 
-1. `record_video.py`
+### Video Recording
 
-  Use this script to record several videos in your desired directory just with the help of a few key presses.
+Use this script to record several videos in your desired directory just with the help of a few key presses.
 - Run the script using the command:
 
       python record_video.py
@@ -105,5 +124,3 @@ To manipulate the video recording mechanism, there are key shortcuts on the scre
 - Press `R` to start recording a video if not currently recording.
 - Press `E` to end the current video recording and save it to the directory.
 - Press `Q` to terminate the script and get back to the terminal.
-
----
