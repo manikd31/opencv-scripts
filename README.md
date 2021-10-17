@@ -27,7 +27,7 @@ Demo scripts to use for OpenCV projects.
 - `augment_dataset.py` : script to process all raw videos and create an augmented data-set from the selected data augmentation methods
 
 
-#### Data Augmentation:
+#### Dataset Augmentation:
 - `flip_video.py` : horizontally flip recorded videos
 - `convert_to_gray.py` : convert colored videos to grayscale
 - `invert_color.py` : invert image colors instead of converting to grayscale
