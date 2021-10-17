@@ -1,4 +1,4 @@
-## OpenCV Scripts
+# OpenCV Scripts
 
 Demo scripts to use for OpenCV projects.
 
@@ -67,6 +67,14 @@ And then, install the dependencies using:
 
 ## Getting Started
 
+The first step to using any of the scripts is to populate/update the `constants.py` file with the relevant default values used across the project. The most relevant ones will be:
+
+    TEST_PATH_IN = r"C:/Users/user/Desktop"
+    TEST_PATH_OUT = r"C:/Users/user/Desktop"
+    TEST_FILE_NAME = "video_name.mp4"
+
+## Usage
+
 To begin using the scripts, follow the commands mentioned below:
 
 1. `record_video.py`
@@ -89,9 +97,9 @@ To begin using the scripts, follow the commands mentioned below:
 
 - And finally, enter the name of the video (with or without the extension .MP4)
 
-      Enter the video name:      video.mp4
+      Enter the video name:      video_name.mp4
 
-When recording, the videos will be saved with a number at the end, for example, the first 2 videos with the name `video.mp4` will become `video_0.mp4` and `video_1.mp4` to avoid overwriting files with same names.
+When recording, the videos will be saved with a number at the end, for example, the first 2 videos with the name `video_name.mp4` will become `video_name_0.mp4` and `video_name_1.mp4` to avoid overwriting files with same names.
 
 To manipulate the video recording mechanism, there are key shortcuts on the screen. The display also shows if a video is being recorded or not, and how long the video has been recorded so far. These keypresses are as follows:
 - Press `R` to start recording a video if not currently recording.
