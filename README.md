@@ -124,3 +124,28 @@ To manipulate the video recording mechanism, there are key shortcuts on the scre
 - Press `R` to start recording a video if not currently recording.
 - Press `E` to end the current video recording and save it to the directory.
 - Press `Q` to terminate the script and get back to the terminal.
+
+<br />
+
+### Downsizing Video
+
+---
+
+## Data Augmentation
+Use these data augmentation methods on raw videos to create a variety of different styles of videos to enhance the dataset.
+
+### Horizontal Flipping
+
+<br />
+
+### Grayscale Conversion
+
+<br />
+
+### Color Inversion
+
+<br />
+
+### Video Blurring
+
+---
