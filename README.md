@@ -35,12 +35,12 @@ Demo scripts to use for OpenCV projects.
 
 
 #### TODO:
-- create the model to train using PyTorch
-- finalize data-set to use
-- add padding for shorter videos, or clip frames for longer videos, to train on in case number of input frames is fixed
-- create a new script to train and test model outputs
-- create a new output window for live testing
-- complete report by November 19th
+- [ ] create the model to train using PyTorch
+- [ ] finalize data-set to use
+- [ ] add padding for shorter videos, or clip frames for longer videos, to train on in case number of input frames is fixed
+- [ ] create a new script to train and test model outputs
+- [ ] create a new output window for live testing
+- [ ] complete report by November 19th
 
 
 #### Project Outline:
