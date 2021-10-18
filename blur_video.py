@@ -63,27 +63,27 @@ def main():
         print(f"    [ERROR]\tThe folder \"{path_in}\" doesn't exist.")
         return
 
-    answer_is_dir = prompt({
+    answer_is_dataset = prompt({
         'type': 'list',
-        'name': 'is_dir',
-        'message': 'Do you wish to process the complete folder or selected videos?',
+        'name': 'is_dataset',
+        'message': 'Do you wish to process the complete dataset or selected folders?',
         'choices': [
-            'Complete Folder',
-            'Select Videos'
+            'Complete Dataset',
+            'Select Folders'
         ]
     })
-    is_dir = answer_is_dir['is_dir'] == "Complete Folder"
+    is_dataset = answer_is_dataset['is_dataset'] == "Complete Dataset"
 
-    if is_dir:
-        file_names = os.listdir(path_in)
+    if is_dataset:
+        folder_names = os.listdir(path_in)
     else:
-        answer_file_names = prompt({
+        answer_folder_names = prompt({
             'type': 'checkbox',
-            'name': 'file_names',
-            'message': 'Select the videos to invert colors of: ',
+            'name': 'folder_names',
+            'message': 'Select the folders to process: ',
             'choices': [{'name': _file} for _file in os.listdir(path_in)]
         })
-        file_names = answer_file_names['file_names']
+        folder_names = answer_folder_names['folder_names']
 
     answer_path_out = prompt({
         'type': 'input',
@@ -103,14 +103,45 @@ def main():
     KERNEL_SIZE = BLUR_INTENSITY.get(blur_intensity)
 
     os.makedirs(path_out, exist_ok=True)
-    num_videos = len(file_names)
-    print(f"    [INFO]\tFound {num_videos} videos.")
-    for _id, video in enumerate(file_names):
-        print(f"    [INFO]\t({_id + 1}/{num_videos})\tProcessing video \"{video}\"")
-        video_path = os.path.join(path_in, video)
-        blurred_video_name = f"{video.split('.')[0]}_blur={blur_intensity}{VIDEO_EXT}"
-        save_path = os.path.join(path_out, blurred_video_name)
-        blur_video(video_path, save_path)
+
+    num_folders = len(folder_names)
+    print(f"    [INFO]\tFound {num_folders} folders.")
+    for folder_id, folder in enumerate(folder_names):
+        print(f"    [INFO]\t({folder_id + 1}/{num_folders})\tProcessing folder \"{folder}\"")
+        folder_path = os.path.join(path_in, folder)
+        new_folder_path = os.path.join(path_out, folder)
+        os.makedirs(new_folder_path, exist_ok=True)
+
+        answer_is_dir = prompt({
+            'type': 'list',
+            'name': 'is_dir',
+            'message': f'Do you wish to process the complete folder \"{folder.upper()}\" or selected videos?',
+            'choices': [
+                'Complete Folder',
+                'Select Videos'
+            ]
+        })
+        is_dir = answer_is_dir['is_dir'] == "Complete Folder"
+
+        if is_dir:
+            file_names = os.listdir(folder_path)
+        else:
+            answer_file_names = prompt({
+                'type': 'checkbox',
+                'name': 'file_names',
+                'message': 'Select the videos to blur: ',
+                'choices': [{'name': _file} for _file in os.listdir(folder_path)]
+            })
+            file_names = answer_file_names['file_names']
+
+        num_videos = len(file_names)
+        print(f"    [INFO]\t\tFound {num_videos} videos.")
+        for video_id, video in enumerate(file_names):
+            print(f"    [INFO]\t\t({video_id + 1}/{num_videos})\tProcessing video \"{video}\"")
+            video_path = os.path.join(folder_path, video)
+            flipped_name = f"{video.split('.')[0]}_blur={blur_intensity}{VIDEO_EXT}"
+            save_path = os.path.join(new_folder_path, flipped_name)
+            blur_video(video_path, save_path)
 
     print("    [INFO]\tDone!")
 
