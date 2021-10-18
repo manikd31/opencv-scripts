@@ -112,27 +112,29 @@ def main():
         new_folder_path = os.path.join(path_out, folder)
         os.makedirs(new_folder_path, exist_ok=True)
 
-        answer_is_dir = prompt({
-            'type': 'list',
-            'name': 'is_dir',
-            'message': f'Do you wish to process the complete folder \"{folder.upper()}\" or selected videos?',
-            'choices': [
-                'Complete Folder',
-                'Select Videos'
-            ]
-        })
-        is_dir = answer_is_dir['is_dir'] == "Complete Folder"
-
-        if is_dir:
-            file_names = os.listdir(folder_path)
-        else:
-            answer_file_names = prompt({
-                'type': 'checkbox',
-                'name': 'file_names',
-                'message': 'Select the videos to blur: ',
-                'choices': [{'name': _file} for _file in os.listdir(folder_path)]
+        file_names = os.listdir(folder_path)
+        if not is_dataset:
+            answer_is_dir = prompt({
+                'type': 'list',
+                'name': 'is_dir',
+                'message': f'Do you wish to process the complete folder \"{folder.upper()}\" or selected videos?',
+                'choices': [
+                    'Complete Folder',
+                    'Select Videos'
+                ]
             })
-            file_names = answer_file_names['file_names']
+            is_dir = answer_is_dir['is_dir'] == "Complete Folder"
+
+            if is_dir:
+                file_names = os.listdir(folder_path)
+            else:
+                answer_file_names = prompt({
+                    'type': 'checkbox',
+                    'name': 'file_names',
+                    'message': 'Select the videos to blur: ',
+                    'choices': [{'name': _file} for _file in os.listdir(folder_path)]
+                })
+                file_names = answer_file_names['file_names']
 
         num_videos = len(file_names)
         print(f"    [INFO]\t\tFound {num_videos} videos.")
