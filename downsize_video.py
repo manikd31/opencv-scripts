@@ -23,7 +23,6 @@ from constants import VIDEO_EXT
 
 def parse_video(path_in: str,
                 path_out: str,
-                file_name: str,
                 target_fps: float):
     """
     Helper method to get VideoCapture properties for the given video.
@@ -32,18 +31,11 @@ def parse_video(path_in: str,
         Path to the video to downsize
     :param path_out:
         Path to save the downsized video
-    :param file_name:
-        Name of the video file to downsize
     :param target_fps:
         Target FPS for downsizing video
     """
 
     cap = cv2.VideoCapture(path_in)
-    if target_fps >= cap.get(PROP_ID_FPS):
-        print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video")
-        return
-
-    new_file_name = f"{file_name.split('.')[0]}_downsized_at_fps={int(target_fps)}{VIDEO_EXT}"
 
     width = int(cap.get(PROP_ID_WIDTH))
     height = int(cap.get(PROP_ID_HEIGHT))
@@ -51,7 +43,7 @@ def parse_video(path_in: str,
     frame_count = int(cap.get(PROP_ID_FRAME_COUNT))
     frame_jump = current_fps / target_fps
 
-    out = cv2.VideoWriter(os.path.join(path_out, new_file_name), FOURCC, target_fps, (width, height))
+    out = cv2.VideoWriter(path_out, FOURCC, target_fps, (width, height))
 
     curr_frame = 0
     prev_frame_idx = -1
@@ -157,8 +149,15 @@ def main():
         for video_id, video in enumerate(file_names):
             print(f"    [INFO]\t\t({video_id + 1}/{num_videos})\tProcessing video \"{video}\"")
             video_path = os.path.join(folder_path, video)
-            save_path = os.path.join(new_folder_path, new_folder_path)
-            parse_video(video_path, save_path, video, target_fps)
+            new_file_name = f"{video.split('.')[0]}_downsized_at_fps={int(target_fps)}{VIDEO_EXT}"
+            save_path = os.path.join(new_folder_path, new_file_name)
+            cap = cv2.VideoCapture(video_path)
+            original_fps = cap.get(PROP_ID_FPS)
+            cap.release()
+            if target_fps >= original_fps:
+                print(f"    [INFO]\tTarget FPS is equal to or larger than source FPS, skipping video")
+            else:
+                parse_video(video_path, save_path, target_fps)
 
     print("    [INFO]\tDone!")
 
