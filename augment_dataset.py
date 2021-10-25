@@ -136,7 +136,7 @@ def main():
                 continue
             print(f"    [INFO]\t({_id}/{num_videos - 1})\tProcessing video \"{source_video}\"")
             video_in = os.path.join(path_out, source_video)
-            parse_video(video_in, downsize_path, source_video, float(TEST_TARGET_FPS))
+            parse_video(video_in, downsize_path, float(TEST_TARGET_FPS))
 
     print("    [INFO]\tDone!")
 
