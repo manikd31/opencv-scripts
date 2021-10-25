@@ -1,9 +1,12 @@
 # Directories to use as default path-in and path-out
 MODEL_BASE_PATH = r"C:/Users/Manik/Desktop"
-TEST_PATH_IN = r"C:/Users/Manik/Desktop/Hand-Gestures-Videos"
-TEST_PATH_OUT = r"C:/Users/Manik/Desktop/test_videos"
+TEST_PATH_IN = r"C:/Users/Manik/Desktop/data/copy-data"
+TEST_PATH_OUT = r"C:/Users/Manik/Desktop/data/preprocess"
 TEST_FILE_NAME = "user02.mp4"
-TEST_TARGET_FPS = 8
+TEST_TARGET_FPS = 4
+TEST_TARGET_FRAMES = 40
+TEST_RESIZE_FRAME_WIDTH = 224
+TEST_RESIZE_FRAME_HEIGHT = 224
 
 # Video extension
 VIDEO_EXT = ".mp4"
