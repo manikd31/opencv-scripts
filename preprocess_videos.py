@@ -1,3 +1,10 @@
+"""
+Script to preprocess video.
+
+Usage:
+    preprocess_video.py (-h | --help)
+"""
+
 # ===================================================================================================
 # This will be a helped file which will be responsible for:
 #   - add padding (duplicate frames for short videos) or remove frames (for long videos)
@@ -50,18 +57,37 @@ import numpy as np
 import os
 from PIL import Image
 from constants import FOURCC
+from constants import TEST_PATH_IN
+from constants import TEST_PATH_OUT
+from constants import PROP_ID_FPS
+from constants import PROP_ID_WIDTH
+from constants import PROP_ID_HEIGHT
 from natsort import natsorted
 from natsort import ns
+from PyInquirer import prompt
 
-FRAMES = 40
+
+def resize_videos(path_in, path_out, resize_dims):
+    """Resize the current video and overwrite with the resized size video"""
+    cap = cv2.VideoCapture(path_in)
+    out = cv2.VideoWriter(path_out, FOURCC, cap.get(PROP_ID_FPS), resize_dims)
+    frames = []
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frames.append(frame)
+    cap.release()
+
+    for frame in frames:
+        frame = np.array(Image.fromarray(frame).resize(resize_dims))
+        out.write(frame)
+    out.release()
 
 
 def video2images(path_in, path_out):
     """Convert video to frames and save as .jpg images"""
     cap = cv2.VideoCapture(path_in)
-    num_frames = cap.get(7)
-    fps = cap.get(5)
-    print(f"Number of frames (cap.get()) = {num_frames} recorded at fps = {fps}")
     frames = []
     while True:
         ret, frame = cap.read()
@@ -87,25 +113,27 @@ def images2video(path_in, path_out, fps):
     out.release()
 
 
-def pad_videos(path_in, path_out):
+def pad_videos(video_path_in, video_path_out, target_frames, frames_path_out=None):
     """Add or remove frames for constant video length"""
-    cap = cv2.VideoCapture(path_in)
-    fps = cap.get(5)
+    cap = cv2.VideoCapture(video_path_in)
+    out = cv2.VideoWriter(video_path_out, FOURCC, cap.get(PROP_ID_FPS),
+                          (int(cap.get(PROP_ID_WIDTH)), int(cap.get(PROP_ID_HEIGHT))))
+
     frames = []
     while True:
         ret, frame = cap.read()
         if not ret:
             break
         frames.append(frame)
+    cap.release()
+
     frames = np.array(frames)
     num_frames = len(frames)
-    diff = num_frames - FRAMES
-    print(f"\nDIFF = {diff}\n")
-    print(f"Original slice ranges = (0, {num_frames - 1})\n")
+    diff = int(num_frames - target_frames)
 
     new_frames = frames
     if diff == 0:
-        print("Good to go!")
+        pass
     else:
         if diff > 0:
             if diff % 2 == 0:
@@ -114,11 +142,7 @@ def pad_videos(path_in, path_out):
             else:
                 new_start_idx = diff // 2 + 1
                 new_end_idx = num_frames - diff // 2
-            print(f"New slice ranges = [{new_start_idx}, {new_end_idx})")
-
             new_frames = frames[new_start_idx:new_end_idx]
-
-            print(f"\nFinal frames list = {len(new_frames)} frames")
 
         else:
             diff = abs(diff)
@@ -128,9 +152,6 @@ def pad_videos(path_in, path_out):
             else:
                 pad_to_start = diff // 2
                 pad_to_end = diff - diff // 2
-            print(f"pad-start = {pad_to_start}, pad-end = {pad_to_end}")
-            new_end_idx = num_frames + pad_to_start + pad_to_end
-            print(f"New slice ranges = [0, {new_end_idx})")
 
             new_frames = []
             for start in range(pad_to_start):
@@ -140,27 +161,119 @@ def pad_videos(path_in, path_out):
             for end in range(pad_to_end):
                 new_frames.append(frames[-1])
             new_frames = np.array(new_frames)
-            print(f"\nFinal frames list = {len(new_frames)} frames")
 
-    print(f"\nType = {type(new_frames)}, length = {len(new_frames)}")
-
-    for frame_id, frame in enumerate(new_frames):
-        img = Image.fromarray(frame)
-        img.save(os.path.join(path_out, f"{frame_id}.jpg"))
-
-    vid_name = os.path.join(path_out, 'video.mp4')
-    images2video(path_out, vid_name, fps)
+    for frame_idx, frame in enumerate(new_frames):
+        out.write(frame)
+        if frames_path_out:
+            frame = Image.fromarray(frame)
+            frame.save(os.path.join(frames_path_out, f"{frame_idx}.jpg"))
+    out.release()
 
 
 def main():
     """Main body"""
-    # path_in = r"C:/Users/Manik/Desktop/test_videos/wave/user01_0_downsized_at_fps=8.mp4"
-    path_in = r"C:/Users/Manik/Desktop/Hand-Gestures-Videos/wave/user01_0.mp4"
-    path_out = r"C:/Users/Manik/Desktop/test_videos/video"
+
+    target_frames = 40
+
+    answer_path_in = prompt({
+        'type': 'input',
+        'name': 'path_in',
+        'message': 'Enter the path to the videos directory: ',
+        'default': TEST_PATH_IN
+    })
+    path_in = answer_path_in['path_in']
+    if not os.path.isdir(path_in):
+        print(f"    [ERROR]\tThe folder \"{path_in}\" doesn't exist.")
+        return
+
+    answer_is_dataset = prompt({
+        'type': 'list',
+        'name': 'is_dataset',
+        'message': 'Do you wish to process the complete dataset or selected folders?',
+        'choices': [
+            'Complete Dataset',
+            'Select Folders'
+        ]
+    })
+    is_dataset = answer_is_dataset['is_dataset'] == "Complete Dataset"
+
+    if is_dataset:
+        folder_names = os.listdir(path_in)
+    else:
+        answer_folder_names = prompt({
+            'type': 'checkbox',
+            'name': 'folder_names',
+            'message': 'Select the folders to process: ',
+            'choices': [{'name': _file} for _file in os.listdir(path_in)]
+        })
+        folder_names = answer_folder_names['folder_names']
+
+    answer_path_out = prompt({
+        'type': 'input',
+        'name': 'path_out',
+        'message': 'Enter the path to save the converted videos to: ',
+        'default': TEST_PATH_OUT
+    })
+    path_out = answer_path_out['path_out']
+
+    answer_save_frames = prompt({
+        'type': 'list',
+        'name': 'save_frames',
+        'message': 'Do you want to save the padded videos as frames?',
+        'choices': [
+            'Yes',
+            'No'
+        ]
+    })
+    save_frames = answer_save_frames['save_frames'] == 'Yes'
+
     os.makedirs(path_out, exist_ok=True)
-    # video2images(path_in, path_out)
-    pad_videos(path_in, path_out)
-    print("Done!")
+
+    num_folders = len(folder_names)
+    print(f"    [INFO]\tFound {num_folders} folders.")
+    for folder_id, folder in enumerate(folder_names):
+        print(f"    [INFO]\t({folder_id + 1}/{num_folders})\tProcessing folder \"{folder}\"")
+        folder_path = os.path.join(path_in, folder)
+        new_folder_path = os.path.join(path_out, folder)
+        os.makedirs(new_folder_path, exist_ok=True)
+
+        file_names = os.listdir(folder_path)
+        if not is_dataset:
+            answer_is_dir = prompt({
+                'type': 'list',
+                'name': 'is_dir',
+                'message': f'Do you wish to process the complete folder \"{folder.upper()}\" or selected videos?',
+                'choices': [
+                    'Complete Folder',
+                    'Select Videos'
+                ]
+            })
+            is_dir = answer_is_dir['is_dir'] == "Complete Folder"
+
+            if is_dir:
+                file_names = os.listdir(folder_path)
+            else:
+                answer_file_names = prompt({
+                    'type': 'checkbox',
+                    'name': 'file_names',
+                    'message': 'Select the videos to blur: ',
+                    'choices': [{'name': _file} for _file in os.listdir(folder_path)]
+                })
+                file_names = answer_file_names['file_names']
+
+        num_videos = len(file_names)
+        print(f"    [INFO]\t\tFound {num_videos} videos.")
+        for video_id, video in enumerate(file_names):
+            print(f"    [INFO]\t\t({video_id + 1}/{num_videos})\tProcessing video \"{video}\"")
+            video_path = os.path.join(folder_path, video)
+            save_path = os.path.join(new_folder_path, video)
+            pad_videos(video_path, save_path, target_frames)
+            if save_frames:
+                frames_path = os.path.join(new_folder_path, 'frames', video.split('.')[0])
+                os.makedirs(frames_path, exist_ok=True)
+                video2images(save_path, frames_path)
+
+    print("    [INFO]\tDone!")
 
 
 if __name__ == "__main__":
