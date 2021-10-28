@@ -4,10 +4,10 @@ import torch.nn.functional as F
 
 
 class Temporal_CNN(nn.Module):
-    def __init__(self, N_Classes: int, include_top = True ):
+    def __init__(self, N_Classes: int, in_channels: int = 20,  include_top = True ):
         super(Temporal_CNN, self).__init__()
         self.include_top = include_top
-        self.conv1 = nn.Conv2d(in_channels=18, out_channels=96, kernel_size=(7, 7), stride=(2, 2))
+        self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=96, kernel_size=(7, 7), stride=(2, 2))
         self.bn1 = nn.BatchNorm2d(96)
         self.pool1 = nn.MaxPool2d(kernel_size=(2, 2))
 
@@ -80,7 +80,7 @@ class Temporal_CNN(nn.Module):
 
 
 if __name__ == '__main__':
-    input_shape = (10, 18, 216, 216 ) # (B, C, H, W)
+    input_shape = (10, 20, 216, 216 ) # (B, C, H, W)
     N_CLASSES = 101
     inp = torch.rand(input_shape)
     model = Temporal_CNN(N_CLASSES)

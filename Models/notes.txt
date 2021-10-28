@@ -1,0 +1,32 @@
+
+- We have used UCF101 dataset for this project.
+- For utilization of temporal information, we have used optical flow images and RGB frames for utilizing spatial information.
+- The pre-processed RGB frames and flow images can be downloaded from
+- we have used a stack of 10 RGB frames as input for spatial stream 
+- stack of 50 optical flow frames as input for temporal stream.
+- batch size = 4
+
+Spartial - (bs, 3, 224, 224)
+Temporal - (bs, 20, 224, 224)
+
+motion vector - (2, 244, 244)
+
+
+
+
+                                     [ Extract RGB Frames from the video ]              +-----------------+
+  +--------------+                            +-------------+                           |                 |
+  |              |     ---------------------  | RGB Frames  +-------------------------->|  Spartial CNN   |\
+  +--------------+    /                       +-------------+                           |                 | \
+  |              |   /                                                                  +-----------------+  \
+  +--------------+  /                                         stack of 10 RGB frames                          \                                             
+  |    Video     | /                                                                                           \   +---------------+        +-------------+  
+  +--------------+/                                                                                             X--+ Average Fusion|------->+   Softmax   |---> Prediction     
+  |              |\                                                                                            /   +---------------+        +-------------+          
+  +--------------+ \                                            stack of 20 optical flow frames               /
+  |              |  \                                                                  +------------------+  /
+  +--------------+   \                       +----------------+                        |                  | /
+  |              |    ---------------------- |  Optical Flow  |----------------------->|   Temporal CNN   |/
+  +--------------+                           +----------------+                        |                  |
+                                                                                       +------------------+
+                              [ Convert video to frames and extract optical flow ]
