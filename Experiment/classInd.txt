@@ -1,0 +1,8 @@
+1 background
+2 clap
+3 peace
+4 swipe_left
+5 swipe_right
+6 thumbs_down
+7 thumbs_up
+8 wave
