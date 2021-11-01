@@ -1,10 +1,12 @@
+import time
+
 import cv2
 import numpy as np
 import keras
-import os
 from threading import Thread
 import queue
-# import multiprocessing
+import os
+from PIL import Image
 
 weights_path = r"E:/LakeheadU/Hand-Gestures-Videos/sample_data/base_model.h5"
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
@@ -22,42 +24,19 @@ class_names = [
 
 INT2LAB = dict()
 LAB2INT = dict()
-# que = multiprocessing.Manager().Queue()
-
-
-# def worker(que):
-#     # frames = np.expand_dims(frames, axis=0)
-#     # predictions = np.argmax(model.predict(frames), axis=1)[0]
-#     predictions = 0
-#     que.put(predictions)
-
-# class Worker(multiprocessing.Process):
-#     def __init__(self,que):
-#         # super().__init__(self)
-#         self.model = keras.models.load_model(weights_path)
-#         self.que = que
-#
-#
-#     def run(self,frames):
-#         frames = np.expand_dims(frames, axis=0)
-#         predictions = np.argmax(self.model.predict(frames), axis=1)[0]
-#         # predictions = 0
-#         self.que.put(predictions)
-#         return
 
 
 class Inference(Thread):
+    """
+    Thread to get the predictions for a set of 20 frames from the input video stream.
+    """
+
     def __init__(self, model):
         Thread.__init__(self)
         self.model = model
-        print(self.model.summary())
         self.shutdown = False
-        self.queue_in = queue.Queue(20)
+        self.queue_in = queue.Queue(1)
         self.queue_out = queue.Queue(1)
-
-        init_frames = np.random.random((20, 100, 100, 3))
-        for frame in init_frames:
-            self.queue_in.put_nowait(frame)
 
     def put_nowait(self, frame):
         """
@@ -88,28 +67,66 @@ class Inference(Thread):
         """
         while not self.shutdown:
             try:
-                frames = np.array(self.queue_in.queue)
-                frames = np.expand_dims(frames, axis=0)
+                frames = self.queue_in.get(timeout=1)
             except queue.Empty:
                 frames = None
 
             if frames is not None:
                 predictions = self.infer(frames)
-                del frames
                 predictions = predictions[0]
 
                 if self.queue_out.full():
                     # Remove one frame
                     self.queue_out.get_nowait()
                     print("*** Unused predictions ***")
-                self.queue_out.put(predictions, block=False)
+                self.queue_out.put(predictions, False)
 
-    def infer(self, clip):
-        frames = clip
+    def infer(self, frames):
         predictions = self.model.predict(frames)
         predictions = np.argmax(predictions, axis=1)
 
         return predictions
+
+
+class VideoStream(Thread):
+    """
+    Thread that reads frames from the video source
+    """
+
+    def __init__(self, video_source, fps=16, queue_size=20):
+        Thread.__init__(self)
+        self.video_source = video_source
+        self.frames = queue.Queue(queue_size)
+        self.fps = fps
+        self.delta_t = 1.0 / self.fps
+        self.shutdown = False
+
+    def stop(self):
+        """Stop the video stream."""
+        self.shutdown = True
+
+    def get_image(self):
+        """Get the set of frames from the FIFO queue of frames."""
+        return self.frames.get()
+
+    def run(self):
+        while not self.shutdown:
+            start_time = time.perf_counter()
+            _, frame = self.video_source.read()
+
+            if frame is None:
+                self.stop()
+                continue
+
+            if self.frames.full():
+                self.frames.get_nowait()
+                print("*** Frame skipped ***")
+            self.frames.put(frame, False)
+
+            elapsed = time.perf_counter() - start_time
+            delay = self.delta_t - elapsed
+            if delay > 0:
+                time.sleep(delay)
 
 
 def main():
@@ -119,50 +136,89 @@ def main():
         LAB2INT[c_name] = c_idx
 
     model = keras.models.load_model(weights_path)
-    # pool = multiprocessing.Pool(processes=4,initializer=Worker, initargs=(que, ))
-
     cap = cv2.VideoCapture(0)
 
+    # initial random frames to get prediction
+    frames = np.random.randn(1, 20, 100, 100, 3)
+
     inference = Inference(model)
+    video_stream = VideoStream(video_source=cap)
     inference.start()
+    video_stream.start()
 
+    # Current frame index to use while comparing with `step_size`
     frame_idx = 0
+
+    # New clip ready after every `step_size` frames
     step_size = 16
-    predictions = 0
+
+    # Save previous predictions in case new predictions is `None`
+    old_predictions = 0
+
     while True:
-        ret, frame = cap.read()
-        frame_idx += 1
-        frame = cv2.flip(frame, 1)
-        frame_copy = frame.copy()
-        if not ret:
-            cv2.destroyAllWindows()
-            break
-        # frame = (100, 100, 3) --> (1, 100, 100, 3)
-        frame = cv2.resize(frame, (100, 100))
+        try:
+            frame_idx += 1
+            frame = video_stream.get_image()
 
-        inference.put_nowait(frame)
-        if frame_idx % step_size == 0:
+            if frame is None:
+                break
+
+            frame = cv2.flip(frame, 1)
+            frame_copy = frame.copy()
+            frame = cv2.resize(frame, (100, 100))
+            frames = np.roll(frames, -1, 1)
+            frames[:, -1, :, :, :] = frame
+
+            if frame_idx == step_size:
+                # A new clip is ready
+                inference.put_nowait(frames)
+
+            frame_idx = frame_idx % step_size
+
             predictions = inference.get_nowait()
+            # predictions = post_process(predictions)
 
-        # frames.append(frame)
-        # if len(frames) == 20:
-            # frames = (20, 100, 100, 3) --> (1, 20, 100, 100, 3)
-            # p = Worker()
-            # pool.apply(frames)
-            # frames = []
+            if predictions is None:
+                predictions = old_predictions
 
-        # if not que.empty():
-        #     predictions = que.get()
+            old_predictions = predictions
 
-        cv2.putText(frame_copy, f"Predicted : {INT2LAB[predictions]}", (20, 20), FONT_STYLE, 1.5, (255, 255, 255), 2)
-        cv2.imshow("Frame", frame_copy)
+            cv2.putText(frame_copy, f"Predicted : {INT2LAB[predictions]}",
+                        (20, 20), FONT_STYLE, 1.5, (255, 255, 255), 2)
+            cv2.imshow("Frame", frame_copy)
 
-        if cv2.waitKey(1) == ord('q'):
-            cv2.destroyAllWindows()
-            break
+            if cv2.waitKey(1) == ord('q'):
+                cv2.destroyAllWindows()
+                break
 
+        except Exception as e:
+            print(f"------ Exception Raised -------\n{e}")
+            raise e
+
+    cap.release()
+    cv2.destroyAllWindows()
+    video_stream.stop()
     inference.stop()
+
+
+def post_process(predictions):
+    predictions = np.argmax(predictions, axis=1)
+    return predictions[0]
 
 
 if __name__ == "__main__":
     main()
+    # model = keras.models.load_model(weights_path)
+    # video = r"E:/LakeheadU/Hand-Gestures-Videos/sample_data/frames/thumbs_up/video_3"
+    # frames = os.listdir(video)
+    # all_frames = []
+    # for f in frames:
+    #     img = Image.open(os.path.join(video, f))
+    #     all_frames.append(np.array(img))
+
+    # all_frames = np.random.random((20, 100, 100, 3))
+    # _input = np.expand_dims(np.array(all_frames), axis=0)
+    # predictions = model.predict(_input)
+    # print(predictions)
+    # predictions = np.argmax(predictions, axis=1)
+    # print(predictions)
