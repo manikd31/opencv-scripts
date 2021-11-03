@@ -93,6 +93,7 @@ def video2images(path_in, path_out):
         ret, frame = cap.read()
         if not ret:
             break
+        frame = np.flip(frame, axis=-1)
         frames.append(frame)
     cap.release()
 
@@ -113,7 +114,7 @@ def images2video(path_in, path_out, fps):
     out.release()
 
 
-def pad_videos(video_path_in, video_path_out, target_frames, frames_path_out=None):
+def pad_videos(video_path_in, video_path_out, target_frames):
     """Add or remove frames for constant video length"""
     cap = cv2.VideoCapture(video_path_in)
     out = cv2.VideoWriter(video_path_out, FOURCC, cap.get(PROP_ID_FPS),
@@ -164,9 +165,6 @@ def pad_videos(video_path_in, video_path_out, target_frames, frames_path_out=Non
 
     for frame_idx, frame in enumerate(new_frames):
         out.write(frame)
-        if frames_path_out:
-            frame = Image.fromarray(frame)
-            frame.save(os.path.join(frames_path_out, f"{frame_idx}.jpg"))
     out.release()
 
 
