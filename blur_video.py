@@ -18,7 +18,7 @@ from constants import TEST_PATH_IN
 from constants import TEST_PATH_OUT
 from constants import VIDEO_EXT
 
-KERNEL_SIZE = BLUR_INTENSITY.get("MEDIUM")
+KERNEL_SIZE = BLUR_INTENSITY.get("LOW")
 
 
 def blur_video(path_in: str,
