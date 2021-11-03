@@ -7,6 +7,7 @@ Usage:
 
 from PyInquirer import prompt
 import cv2
+import numpy as np
 import os
 
 from constants import FOURCC
