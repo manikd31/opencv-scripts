@@ -53,7 +53,7 @@ import os
 
 from augment_dataset import augment_dataset
 from downsize_video import parse_video
-from preprocess_videos import pad_videos, resize_videos
+from preprocess_videos import pad_videos, resize_videos, video2images
 
 
 def main():
@@ -163,7 +163,7 @@ def main():
     print(f"    [INFO]\t\t\tDOWNSIZING VIDEOS")
     print(f"    [INFO]\t{'=' * 50}")
 
-    # Iterate through all the folders (classes) and process all videos
+    # # Iterate through all the folders (classes) and process all videos
     num_folders = len(folder_names)
     print(f"    [INFO]\tFound {num_folders} folders.")
     for folder_idx, folder_name in enumerate(folder_names):
@@ -193,17 +193,12 @@ def main():
     print(f"    [INFO]\t\t\tPADDING VIDEOS")
     print(f"    [INFO]\t{'=' * 50}")
 
-    # padded_frames_directory = os.path.join(path_out, 'frames_dir')
-    # os.makedirs(padded_frames_directory, exist_ok=True)
-
     # Iterate through all the folders (classes) and process all videos
     for folder_idx, folder_name in enumerate(folder_names):
         print(f"    [INFO]\t({folder_idx + 1}/{num_folders})\tProcessing folder \"{folder_name}\"")
         folder_path = os.path.join(downsized_path_out, folder_name)
         new_videos_folder_path = os.path.join(padded_videos_directory, folder_name)
         os.makedirs(new_videos_folder_path, exist_ok=True)
-        # new_frames_folder_path = os.path.join(padded_frames_directory, folder_name)
-        # os.makedirs(new_frames_folder_path, exist_ok=True)
 
         # Get all videos inside each class folder
         file_names = natsorted(os.listdir(folder_path), alg=ns.IC)
@@ -213,12 +208,9 @@ def main():
             print(f"    [INFO]\t\t({video_idx + 1}/{num_videos})\tProcessing video \"{video_name}\"")
             video_path_in = os.path.join(folder_path, video_name)
             video_path_out = os.path.join(new_videos_folder_path, video_name)
-            # frames_path_out = os.path.join(new_frames_folder_path, video_name.split('.')[0])
-            # os.makedirs(frames_path_out, exist_ok=True)
 
             # Call the method to pad video frames
             pad_videos(video_path_in, video_path_out, target_frames)
-            # pad_videos(video_path_in, video_path_out, frames_path_out, target_frames)
 
     # ----------------------------------------------------------------------------------------------
     #                           Step 4 : Resize video frames (width, height)
@@ -284,6 +276,38 @@ def main():
                 augmented_video_name = f"{video_name.split('.')[0]}_{method}{VIDEO_EXT}"
                 video_path_out = os.path.join(augmented_videos_folder_path, augmented_video_name)
                 augment_dataset(video_path_in, video_path_out, method)
+
+    # ----------------------------------------------------------------------------------------------
+    #                           Step 6 : Convert videos to frames
+    # ----------------------------------------------------------------------------------------------
+
+    print()
+    print(f"    [INFO]\t{'=' * 50}")
+    print(f"    [INFO]\t\t\tCONVERTING VIDEOS TO IMAGES")
+    print(f"    [INFO]\t{'=' * 50}")
+
+    padded_frames_directory = os.path.join(path_out, 'frames_dir')
+    os.makedirs(padded_frames_directory, exist_ok=True)
+
+    # Iterate through all the folders (classes) and process all videos
+    for folder_idx, folder_name in enumerate(folder_names):
+        print(f"    [INFO]\t({folder_idx + 1}/{num_folders})\tProcessing folder \"{folder_name}\"")
+        folder_path = os.path.join(augmented_dataset_path, folder_name)
+        new_frames_folder_path = os.path.join(padded_frames_directory, folder_name)
+        os.makedirs(new_frames_folder_path, exist_ok=True)
+
+        # Get all videos inside each class folder
+        file_names = natsorted(os.listdir(folder_path), alg=ns.IC)
+        num_videos = len(file_names)
+        print(f"    [INFO]\t\tFound {num_videos} videos.")
+        for video_idx, video_name in enumerate(file_names):
+            print(f"    [INFO]\t\t({video_idx + 1}/{num_videos})\tProcessing video \"{video_name}\"")
+            video_path_in = os.path.join(folder_path, video_name)
+            frames_path_out = os.path.join(new_frames_folder_path, video_name.split('.')[0])
+            os.makedirs(frames_path_out, exist_ok=True)
+
+            # Call the method to convert video to frames
+            video2images(video_path_in, frames_path_out)
 
     print(f"\n    [INFO]\tDone!")
 
