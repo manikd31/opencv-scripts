@@ -3,12 +3,13 @@ MODEL_BASE_PATH = r"C:/Users/Manik/Desktop"
 TEST_PATH_IN = r"C:/Users/Manik/Desktop/data/Cleaned Dataset"
 TEST_PATH_OUT = r"E:/LakeheadU/Final Project Data/data"
 TEST_PATH_TEST_VIDEOS = r"E:/LakeheadU/Final Project Data/data/test_videos"
+TEST_SAVED_MODELS_DIRECTORY = r"E:/LakeheadU/Final Project Data/model_weights"
 TEST_FILE_NAME = "user02.mp4"
 TEST_TARGET_FPS = 4
 TEST_TARGET_FRAMES = 20
 TEST_RESIZE_FRAME_WIDTH = 100
 TEST_RESIZE_FRAME_HEIGHT = 100
-TEST_NUM_TEST_VIDEOS_PER_CLASS = 10
+TEST_NUM_TEST_VIDEOS_PER_CLASS = 20
 
 # Video extension
 VIDEO_EXT = ".mp4"
