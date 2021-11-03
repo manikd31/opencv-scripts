@@ -162,7 +162,7 @@ def main():
         'type': 'input',
         'name': 'num_test_videos',
         'message': 'Enter the number of test videos to be selected (per class): ',
-        'default': TEST_NUM_TEST_VIDEOS_PER_CLASS
+        'default': str(TEST_NUM_TEST_VIDEOS_PER_CLASS)
     })
     num_test_videos_per_class = int(answer_num_test_videos['num_test_videos'])
 
