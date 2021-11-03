@@ -39,21 +39,26 @@ The dataset folder structure before using this script should be something as fol
 Usage:
     prepare_dataset.py (-h | --help)
 """
+import os
 import shutil
 
-from constants import AUGMENTATION_METHODS, VIDEO_EXT, TEST_RESIZE_FRAME_WIDTH, TEST_RESIZE_FRAME_HEIGHT
-from constants import TEST_TARGET_FRAMES
-from constants import TEST_TARGET_FPS
-from constants import TEST_PATH_IN
-from constants import TEST_PATH_OUT
 from natsort import natsorted
 from natsort import ns
 from PyInquirer import prompt
-import os
 
 from augment_dataset import augment_dataset
+from constants import AUGMENTATION_METHODS
+from constants import TEST_PATH_IN
+from constants import TEST_PATH_OUT
+from constants import TEST_RESIZE_FRAME_HEIGHT
+from constants import TEST_RESIZE_FRAME_WIDTH
+from constants import TEST_TARGET_FPS
+from constants import TEST_TARGET_FRAMES
+from constants import VIDEO_EXT
 from downsize_video import parse_video
-from preprocess_videos import pad_videos, resize_videos, video2images
+from preprocess_videos import pad_videos
+from preprocess_videos import resize_videos
+from preprocess_videos import video2images
 
 
 def main():
