@@ -2,19 +2,6 @@
 Final script to run on the raw videos dataset folder. This will help create a new dataset folder
 and prepare the videos to be input for training the model.
 
-
-This script should follow these steps:
-    - get raw videos
-    - pad / remove frames
-    - downsize to target_fps and create new data folder in same directory
-    - resize to input_shape
-    - perform data augmentation
-        - ask user for types of data-augmentation
-        - OR
-        - most likely don't use horizontal flipping)
-    - get frames directory for all videos in same directory
-
-
 The dataset folder structure before using this script should be something as follows:
 
     /path-to-the-dataset/
@@ -45,11 +32,14 @@ import shutil
 from natsort import natsorted
 from natsort import ns
 from PyInquirer import prompt
+import numpy as np
 
 from augment_dataset import augment_dataset
 from constants import AUGMENTATION_METHODS
+from constants import TEST_NUM_TEST_VIDEOS_PER_CLASS
 from constants import TEST_PATH_IN
 from constants import TEST_PATH_OUT
+from constants import TEST_PATH_TEST_VIDEOS
 from constants import TEST_RESIZE_FRAME_HEIGHT
 from constants import TEST_RESIZE_FRAME_WIDTH
 from constants import TEST_TARGET_FPS
@@ -158,6 +148,23 @@ def main():
     frame_width = int(answer_frame_width['frame_width'])
     frame_height = int(answer_frame_height['frame_height'])
     new_dims = (frame_width, frame_height)
+
+    answer_test_videos_dir = prompt({
+        'type': 'input',
+        'name': 'test_videos_dir',
+        'message': 'Enter the path to test-videos directory (auto created from this script): ',
+        'default': TEST_PATH_TEST_VIDEOS
+    })
+    test_videos_dir = answer_test_videos_dir['test_videos_dir']
+    os.makedirs(test_videos_dir, exist_ok=True)
+
+    answer_num_test_videos = prompt({
+        'type': 'input',
+        'name': 'num_test_videos',
+        'message': 'Enter the number of test videos to be selected (per class): ',
+        'default': TEST_NUM_TEST_VIDEOS_PER_CLASS
+    })
+    num_test_videos_per_class = int(answer_num_test_videos['num_test_videos'])
 
     # ----------------------------------------------------------------------------------------------
     #                           Step 2 : Downsize all videos to a target FPS
@@ -313,6 +320,28 @@ def main():
 
             # Call the method to convert video to frames
             video2images(video_path_in, frames_path_out)
+
+    # ----------------------------------------------------------------------------------------------
+    #                           Step 7 : Prepare test-videos directory
+    # ----------------------------------------------------------------------------------------------
+
+    # Iterate through all class folders
+    for class_name in os.listdir(padded_videos_directory):
+        class_path = os.path.join(padded_videos_directory, class_name)
+        new_class_path = os.path.join(test_videos_dir, class_name)
+        os.makedirs(new_class_path, exist_ok=True)
+
+        # Get all videos in directory and randomly shuffle them
+        all_videos = natsorted(os.listdir(class_path), alg=ns.IC)
+        np.random.shuffle(all_videos)
+        # Select the first `n` videos for testing
+        video_names = all_videos[:num_test_videos_per_class]
+
+        # Copy the selected `n` videos from original dataset to test-videos directory
+        for video in video_names:
+            path_in = os.path.join(class_path, video)
+            path_out = os.path.join(new_class_path, video)
+            shutil.copy(path_in, path_out)
 
     print(f"\n    [INFO]\tDone!")
 
