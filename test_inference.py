@@ -8,7 +8,7 @@ import queue
 import os
 from PIL import Image
 
-weights_path = r"E:/LakeheadU/Hand-Gestures-Videos/sample_data/base_model.h5"
+weights_path = r"E:/LakeheadU/Final Project Data/model_weights/complete_model.h5"
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
 
 class_names = [
@@ -208,17 +208,3 @@ def post_process(predictions):
 
 if __name__ == "__main__":
     main()
-    # model = keras.models.load_model(weights_path)
-    # video = r"E:/LakeheadU/Hand-Gestures-Videos/sample_data/frames/thumbs_up/video_3"
-    # frames = os.listdir(video)
-    # all_frames = []
-    # for f in frames:
-    #     img = Image.open(os.path.join(video, f))
-    #     all_frames.append(np.array(img))
-
-    # all_frames = np.random.random((20, 100, 100, 3))
-    # _input = np.expand_dims(np.array(all_frames), axis=0)
-    # predictions = model.predict(_input)
-    # print(predictions)
-    # predictions = np.argmax(predictions, axis=1)
-    # print(predictions)
