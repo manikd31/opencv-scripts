@@ -8,3 +8,4 @@ PyInquirer              ==1.0.3
 prompt-toolkit          ==1.0.14
 opencv-python           ==4.5.3.56
 natsort                 ==7.1.1
+scikit-learn            ~=0.24.2
