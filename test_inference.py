@@ -5,8 +5,6 @@ import numpy as np
 import keras
 from threading import Thread
 import queue
-import os
-from PIL import Image
 
 weights_path = r"E:/LakeheadU/Final Project Data/model_weights/complete_model.h5"
 FONT_STYLE = cv2.FONT_HERSHEY_PLAIN
@@ -93,7 +91,7 @@ class VideoStream(Thread):
     Thread that reads frames from the video source
     """
 
-    def __init__(self, video_source, fps=16, queue_size=20):
+    def __init__(self, video_source, fps=30, queue_size=20):
         Thread.__init__(self)
         self.video_source = video_source
         self.frames = queue.Queue(queue_size)
@@ -150,7 +148,7 @@ def main():
     frame_idx = 0
 
     # New clip ready after every `step_size` frames
-    step_size = 16
+    step_size = 10
 
     # Save previous predictions in case new predictions is `None`
     old_predictions = 0
@@ -176,7 +174,6 @@ def main():
             frame_idx = frame_idx % step_size
 
             predictions = inference.get_nowait()
-            # predictions = post_process(predictions)
 
             if predictions is None:
                 predictions = old_predictions
@@ -185,7 +182,9 @@ def main():
 
             cv2.putText(frame_copy, f"Predicted : {INT2LAB[predictions]}",
                         (20, 20), FONT_STYLE, 1.5, (255, 255, 255), 2)
-            cv2.imshow("Frame", frame_copy)
+            cv2.putText(frame_copy, f"Q : Quit", (frame_copy.shape[1] - 150, frame_copy.shape[0] - 20),
+                        FONT_STYLE, 1.5, (255, 255, 255), 2)
+            cv2.imshow("Inference", frame_copy)
 
             if cv2.waitKey(1) == ord('q'):
                 cv2.destroyAllWindows()
@@ -199,11 +198,6 @@ def main():
     cv2.destroyAllWindows()
     video_stream.stop()
     inference.stop()
-
-
-def post_process(predictions):
-    predictions = np.argmax(predictions, axis=1)
-    return predictions[0]
 
 
 if __name__ == "__main__":
