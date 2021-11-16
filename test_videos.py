@@ -35,7 +35,8 @@ import cv2
 import keras
 import numpy as np
 
-from constants import TEST_PATH_TEST_VIDEOS, TEST_SAVED_MODELS_DIRECTORY
+from constants import TEST_PATH_TEST_VIDEOS
+from constants import TEST_SAVED_MODELS_DIRECTORY
 
 
 def main():
