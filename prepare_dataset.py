@@ -53,6 +53,8 @@ from preprocess_videos import video2images
 
 def main():
     """Main body"""
+    test_videos_dir = TEST_PATH_TEST_VIDEOS
+    num_test_videos_per_class = TEST_NUM_TEST_VIDEOS_PER_CLASS
 
     # ----------------------------------------------------------------------------------------------
     #                       Step 1 : Get path to the raw videos directory
@@ -149,22 +151,34 @@ def main():
     frame_height = int(answer_frame_height['frame_height'])
     new_dims = (frame_width, frame_height)
 
-    answer_test_videos_dir = prompt({
-        'type': 'input',
-        'name': 'test_videos_dir',
-        'message': 'Enter the path to test-videos directory (auto created from this script): ',
-        'default': TEST_PATH_TEST_VIDEOS
+    answer_create_test_set = prompt({
+        'type': 'list',
+        'name': 'create_test_set',
+        'message': 'Do you wish to create a test-set as well?',
+        'choices': [
+            'Yes',
+            'No'
+        ]
     })
-    test_videos_dir = answer_test_videos_dir['test_videos_dir']
-    os.makedirs(test_videos_dir, exist_ok=True)
+    create_test_set = answer_create_test_set['create_test_set'] == 'Yes'
 
-    answer_num_test_videos = prompt({
-        'type': 'input',
-        'name': 'num_test_videos',
-        'message': 'Enter the number of test videos to be selected (per class): ',
-        'default': str(TEST_NUM_TEST_VIDEOS_PER_CLASS)
-    })
-    num_test_videos_per_class = int(answer_num_test_videos['num_test_videos'])
+    if create_test_set:
+        answer_test_videos_dir = prompt({
+            'type': 'input',
+            'name': 'test_videos_dir',
+            'message': 'Enter the path to test-videos directory (auto created from this script): ',
+            'default': TEST_PATH_TEST_VIDEOS
+        })
+        test_videos_dir = answer_test_videos_dir['test_videos_dir']
+        os.makedirs(test_videos_dir, exist_ok=True)
+
+        answer_num_test_videos = prompt({
+            'type': 'input',
+            'name': 'num_test_videos',
+            'message': 'Enter the number of test videos to be selected (per class): ',
+            'default': str(TEST_NUM_TEST_VIDEOS_PER_CLASS)
+        })
+        num_test_videos_per_class = int(answer_num_test_videos['num_test_videos'])
 
     # ----------------------------------------------------------------------------------------------
     #                           Step 2 : Downsize all videos to a target FPS
@@ -326,23 +340,24 @@ def main():
     #                                   from training videos
     # ----------------------------------------------------------------------------------------------
 
-    # Iterate through all class folders
-    for class_name in os.listdir(padded_videos_directory):
-        class_path = os.path.join(padded_videos_directory, class_name)
-        new_class_path = os.path.join(test_videos_dir, class_name)
-        os.makedirs(new_class_path, exist_ok=True)
+    if create_test_set:
+        # Iterate through all class folders
+        for class_name in os.listdir(padded_videos_directory):
+            class_path = os.path.join(padded_videos_directory, class_name)
+            new_class_path = os.path.join(test_videos_dir, class_name)
+            os.makedirs(new_class_path, exist_ok=True)
 
-        # Get all videos in directory and randomly shuffle them
-        all_videos = natsorted(os.listdir(class_path), alg=ns.IC)
-        np.random.shuffle(all_videos)
-        # Select the first `n` videos for testing
-        video_names = all_videos[:num_test_videos_per_class]
+            # Get all videos in directory and randomly shuffle them
+            all_videos = natsorted(os.listdir(class_path), alg=ns.IC)
+            np.random.shuffle(all_videos)
+            # Select the first `n` videos for testing
+            video_names = all_videos[:num_test_videos_per_class]
 
-        # Copy the selected `n` videos from original dataset to test-videos directory
-        for video in video_names:
-            path_in = os.path.join(class_path, video)
-            path_out = os.path.join(new_class_path, video)
-            shutil.copy(path_in, path_out)
+            # Copy the selected `n` videos from original dataset to test-videos directory
+            for video in video_names:
+                path_in = os.path.join(class_path, video)
+                path_out = os.path.join(new_class_path, video)
+                shutil.copy(path_in, path_out)
 
     print(f"\n    [INFO]\tDone!")
 
