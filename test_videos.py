@@ -94,6 +94,8 @@ def main():
 
     total_samples = 0
     correct_samples = 0
+    true_labels = []
+    predicted_labels = []
     for class_name in class_names:
         class_path = os.path.join(test_videos_dir, class_name)
         class_actual = []
@@ -116,6 +118,8 @@ def main():
             prediction = np.argmax(model.predict(frames))
             class_predictions.append(prediction)
             class_actual.append(lab2int_mapping[class_name])
+            true_labels.append(class_name)
+            predicted_labels.append(int2lab_mapping[prediction])
 
         correct_per_class = 0
         samples_per_class = len(class_predictions)
@@ -131,6 +135,10 @@ def main():
         else:
             print(f"    [INFO]\tClass: \"{class_name}\"\t\tAccuracy: {class_accuracy}")
         print(f"    [INFO]\t{'-' * 50}")
+
+    np.save('true_labels.npy', np.array(true_labels))
+    np.save('predicted_labels.npy', np.array(predicted_labels))
+
     overall_accuracy = round(correct_samples / total_samples, 4)
     print(f"    [INFO]")
     print(f"    [INFO]\t{'=' * 50}")
