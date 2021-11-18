@@ -40,7 +40,7 @@ Demo scripts to use for OpenCV projects.
 - [x] add padding for shorter videos, or clip frames for longer videos, to train on in case number of input frames is fixed
 - [x] create a new script to train and test model outputs
 - [x] create a new output window for live testing
-- [ ] complete report by November 19th
+- [x] complete report by November 19th
 
 
 #### Project Outline:
@@ -56,7 +56,7 @@ Demo scripts to use for OpenCV projects.
 - 10 Sep 2021 - [Updated outline and progress](https://docs.google.com/presentation/d/15rXKTdLrlvkxmiaJCz0HH59UR8_FoUvMuG5g9bL54IQ/edit?usp=sharing)
 - 08 Oct 2021 - [Progress Updates](https://docs.google.com/presentation/d/1lDVqSbILRHq1Q6wEgJD8x5HiSXUuBDnv8lTo3K8qCME/edit?usp=sharing)
 - 29 Oct 2021 - [Progress Updates](https://docs.google.com/presentation/d/18JAQ8uvuaF--sisqcqrYt9JtSETj3Fel04PmZldMkvc/edit?usp=sharing)
-- 19 Nov 2021 - [Final Presentation]()
+- 19 Nov 2021 - [Final Presentation](https://docs.google.com/presentation/d/1tBevJdcTyUB3V7iAo2042F5-Gu-0YKPzbUMACSga2mg/edit?usp=sharing)
 
 ---
 
