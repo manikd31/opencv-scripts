@@ -52,7 +52,7 @@ Demo scripts to use for OpenCV projects.
 #### Project Slides Deck:
 - May 2021 - [Tentative outline](https://docs.google.com/document/d/1sXTo-BjUdvTLN2oQKA-ix1LHM9sqz-XGWphIZPI0ots/edit?usp=sharing)
 - 13 May 2021 - [Introductory presentation](https://docs.google.com/presentation/d/1oDfragLFvmWzsUEXBTLvAuij-GW0XwMH_SSIyqX6OqE/edit?usp=sharing)
-- 22 Jun 2021 - [Project Overview]()
+- 22 Jun 2021 - [Progress and updates](https://docs.google.com/presentation/d/1PjKQRSTTjoYRZZOgmXeid-PW3HIyBOyh8sNw_OZjoU8/edit?usp=sharing)
 - 22 Jul 2021 - [Progress and updates](https://docs.google.com/presentation/d/1PjKQRSTTjoYRZZOgmXeid-PW3HIyBOyh8sNw_OZjoU8/edit?usp=sharing)
 - 10 Sep 2021 - [Updated outline and progress](https://docs.google.com/presentation/d/15rXKTdLrlvkxmiaJCz0HH59UR8_FoUvMuG5g9bL54IQ/edit?usp=sharing)
 - 08 Oct 2021 - [Progress Updates](https://docs.google.com/presentation/d/1lDVqSbILRHq1Q6wEgJD8x5HiSXUuBDnv8lTo3K8qCME/edit?usp=sharing)
